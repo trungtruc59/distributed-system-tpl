@@ -1,0 +1,30 @@
+export default {
+  'settings.title': 'Cài đặt',
+  'settings.themeColor': 'Màu chủ đề',
+  'settings.content': 'Cài đặt nội dung',
+  'settings.search': 'Tìm kiếm',
+  'settings.viewWebsite': 'Xem trang web',
+  'settings.language': 'Ngôn ngữ',
+  'settings.navbar': 'Thanh điều hướng',
+  'settings.menuWidth': 'Chiều rộng menu (px)',
+  'settings.navbar.theme.toLight': 'Nhấn để chuyển sang chế độ sáng',
+  'settings.navbar.theme.toDark': 'Nhấn để chuyển sang chế độ tối',
+  'settings.navbar.screen.toFull': 'Nhấn để bật chế độ toàn màn hình',
+  'settings.navbar.screen.toExit': 'Nhấn để thoát chế độ toàn màn hình',
+  'settings.navbar.alerts': 'Thông báo',
+  'settings.menu': 'Menu',
+  'settings.topMenu': 'Menu trên cùng',
+  'settings.tabBar': 'Thanh tab',
+  'settings.footer': 'Chân trang',
+  'settings.otherSettings': 'Cài đặt khác',
+  'settings.colorWeak': 'Chế độ giảm màu',
+  'settings.alertContent':
+    'Sau khi cấu hình chỉ có hiệu lực tạm thời. Nếu bạn muốn áp dụng thật sự cho dự án, hãy nhấn nút "Sao chép cài đặt" bên dưới và thay thế cấu hình trong tệp settings.json.',
+  'settings.copySettings': 'Sao chép cài đặt',
+  'settings.copySettings.message':
+    'Sao chép thành công, vui lòng dán vào tệp src/settings.json.',
+  'settings.close': 'Đóng',
+  'settings.color.tooltip':
+    '10 màu chuyển sắc được tạo dựa theo màu chủ đề',
+  'settings.menuFromServer': 'Menu từ máy chủ',
+};
