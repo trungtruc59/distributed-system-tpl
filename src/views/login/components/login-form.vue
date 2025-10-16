@@ -11,14 +11,14 @@
       @submit="handleSubmit"
     >
       <a-form-item
-        field="username"
-        :rules="[{ required: true, message: $t('login.form.userName.errMsg') }]"
+        field="phone"
+        :rules="[{ required: true, message: $t('login.form.phone.errMsg') }]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >
         <a-input
-          v-model="userInfo.username"
-          :placeholder="$t('login.form.userName.placeholder')"
+          v-model="userInfo.phone"
+          :placeholder="$t('login.form.phone.placeholder')"
         >
           <template #prefix>
             <icon-user />
@@ -82,12 +82,12 @@
 
   const loginConfig = useStorage('login-config', {
     rememberPassword: true,
-    username: 'admin', // 演示默认值
-    password: 'admin', // demo default value
+    phone: '0967591600', // 演示默认值
+    password: '123456', // demo default value
   });
   const userInfo = reactive({
-    username: loginConfig.value.username,
-    password: loginConfig.value.password,
+    phone: '0967591600',
+    password: '123456',
   });
 
   const handleSubmit = async ({
@@ -111,12 +111,12 @@
         });
         Message.success(t('login.form.login.success'));
         const { rememberPassword } = loginConfig.value;
-        const { username, password } = values;
-        // 实际生产环境需要进行加密存储。
-        // The actual production environment requires encrypted storage.
-        loginConfig.value.username = rememberPassword ? username : '';
+        const { phone, password } = values;
+        loginConfig.value.phone = rememberPassword ? phone : '';
         loginConfig.value.password = rememberPassword ? password : '';
       } catch (err) {
+        console.log(err);
+        
         errorMessage.value = (err as Error).message;
       } finally {
         setLoading(false);

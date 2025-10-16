@@ -40,20 +40,20 @@ setupMock({
 
     // 登录
     Mock.mock(new RegExp('/api/user/login'), (params: MockParams) => {
-      const { username, password } = JSON.parse(params.body);
-      if (!username) {
-        return failResponseWrap(null, '用户名不能为空', 50000);
+      const { phone, password } = JSON.parse(params.body);
+      if (!phone) {
+        return failResponseWrap(null, '手机号不能为空', 50000);
       }
       if (!password) {
         return failResponseWrap(null, '密码不能为空', 50000);
       }
-      if (username === 'admin' && password === 'admin') {
+      if (phone === '0967591600' && password === 'admin') {
         window.localStorage.setItem('userRole', 'admin');
         return successResponseWrap({
           token: '12345',
         });
       }
-      if (username === 'user' && password === 'user') {
+      if (phone === 'user' && password === 'user') {
         window.localStorage.setItem('userRole', 'user');
         return successResponseWrap({
           token: '54321',
@@ -63,7 +63,7 @@ setupMock({
     });
 
     // 登出
-    Mock.mock(new RegExp('/api/user/logout'), () => {
+    Mock.mock(new RegExp('/api/auth/logout'), () => {
       return successResponseWrap(null);
     });
 
