@@ -1,5 +1,6 @@
 import localeMessageBox from '@/components/message-box/locale/vi-VN';
 import localeLogin from '@/views/login/locale/vi-VN';
+import localeRegister from '@/views/register/locale/vi-VN';
 
 import localeWorkplace from '@/views/dashboard/workplace/locale/vi-VN';
 
@@ -47,6 +48,7 @@ export default {
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,
+  ...localeRegister,
   ...localeWorkplace,
   /** simple */
   ...localeSearchTable,

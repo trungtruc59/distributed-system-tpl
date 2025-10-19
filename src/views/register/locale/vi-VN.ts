@@ -1,0 +1,24 @@
+export default {
+  'register.form.title': 'Đăng ký thành viên',
+  'register.form.phone.errMsg': 'Số điện thoại không được để trống',
+  'register.form.password.errMsg': 'Mật khẩu không được để trống',
+  'register.form.repassword.errMsg': 'Nhập lại mật khẩu không được để trống',
+  'register.form.register.errMsg': 'Lỗi đăng nhập, vui lòng làm mới và thử lại',
+  'register.form.register.success': 'Chào mừng bạn sử dụng',
+  'register.form.phone.placeholder': 'Số điện thoại',
+  'register.form.email.placeholder': 'Email',
+  'register.form.password.placeholder': 'Mật khẩu',
+  'register.form.repassword.placeholder': 'Nhập lại mật khẩu',
+  'register.form.rememberPassword': 'Ghi nhớ mật khẩu',
+  'register.form.forgetPassword': 'Quên mật khẩu',
+  'register.form.register': 'Đăng ký tài khoản',
+  'register.form.login': 'Đăng nhập',
+  'register.banner.slogan1': 'Mẫu giao diện chất lượng cao, dùng ngay',
+  'register.banner.subSlogan1':
+    'Nhiều mẫu trang đa dạng, bao phủ hầu hết các kịch bản kinh doanh điển hình',
+  'register.banner.slogan2': 'Giải pháp tích hợp cho các vấn đề thường gặp',
+  'register.banner.subSlogan2':
+    'Đa ngôn ngữ, cấu hình định tuyến, quản lý trạng thái – tất cả trong một',
+  'register.banner.slogan3': 'Tích hợp công cụ tăng cường trực quan AUX',
+  'register.banner.subSlogan3': 'Hiện thực hóa phát triển linh hoạt theo khối',
+};
