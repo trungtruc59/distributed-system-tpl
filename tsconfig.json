@@ -10,12 +10,13 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "baseUrl": ".",
-    "types": ["vite/client", "vue/jsx"],
+    "types": ["vite/client"],
     "paths": {
       "@/*": ["src/*"]
     },
     "lib": ["es2020", "dom"],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
   "include": ["src/**/*", "src/**/*.vue", "src/**/*.tsx"],
   "exclude": ["node_modules"]

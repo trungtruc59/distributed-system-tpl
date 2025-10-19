@@ -8,10 +8,8 @@ export interface LoginData {
 }
 
 export interface LoginRes {
-  data: {
-    token: string;
-    refreshToken: string;
-  }
+  token: string;
+  refreshToken: string;
 }
 
 export interface Logout {

@@ -40,36 +40,21 @@
 
   const barChartOptionsFactory = () => {
     const data = ref<any>([]);
-    const { chartOption } = useChartOption(() => {
-      return {
-        grid: {
-          left: 0,
-          right: 0,
-          top: 10,
-          bottom: 0,
-        },
-        xAxis: {
-          type: 'category',
-          show: false,
-        },
-        yAxis: {
-          show: false,
-        },
-        tooltip: {
-          show: true,
-          trigger: 'axis',
-        },
-        series: {
-          name: 'total',
-          data,
-          type: 'bar',
-          barWidth: 7,
-          itemStyle: {
-            borderRadius: 2,
-          },
-        },
-      };
-    });
+  const { chartOption } = useChartOption(() => {
+    return {
+      grid: { left: 0, right: 0, top: 10, bottom: 0 },
+      xAxis: { type: 'category', show: false },
+      yAxis: { show: false },
+      tooltip: { show: true, trigger: 'axis' },
+      series: {
+        name: 'total',
+        data: data.value,
+        type: 'bar',
+        barWidth: 7,
+        itemStyle: { borderRadius: 2 },
+      },
+    };
+  });
     return {
       data,
       chartOption,
@@ -134,38 +119,17 @@
     const data = ref<any>([]);
     const { chartOption } = useChartOption(() => {
       return {
-        grid: {
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
+        grid: { left: 0, right: 0, top: 10, bottom: 0 },
+        xAxis: { type: 'category', show: false },
+        yAxis: { show: false },
+        tooltip: { show: true, trigger: 'axis' },
+        series: {
+          name: 'total',
+          data: data.value,
+          type: 'bar',
+          barWidth: 7,
+          itemStyle: { borderRadius: 2 },
         },
-        legend: {
-          show: true,
-          top: 'center',
-          right: '0',
-          orient: 'vertical',
-          icon: 'circle',
-          itemWidth: 6,
-          itemHeight: 6,
-          textStyle: {
-            color: '#4E5969',
-          },
-        },
-        tooltip: {
-          show: true,
-        },
-        series: [
-          {
-            name: '总计',
-            type: 'pie',
-            radius: ['50%', '70%'],
-            label: {
-              show: false,
-            },
-            data,
-          },
-        ],
       };
     });
     return {

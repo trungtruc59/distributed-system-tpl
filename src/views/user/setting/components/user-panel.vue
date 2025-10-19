@@ -73,7 +73,7 @@
     },
     {
       label: 'userSetting.label.certification',
-      value: userStore.certification,
+      value: userStore.name,
     },
     {
       label: 'userSetting.label.accountId',

@@ -14,12 +14,12 @@
         <a-space :size="18">
           <div>
             <icon-user />
-            <a-typography-text>{{ userInfo.jobName }}</a-typography-text>
+            <a-typography-text>{{ userInfo.name }}</a-typography-text>
           </div>
           <div>
             <icon-home />
             <a-typography-text>
-              {{ userInfo.organizationName }}
+              {{ userInfo.name }}
             </a-typography-text>
           </div>
           <div>
