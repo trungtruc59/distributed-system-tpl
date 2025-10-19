@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { jwtDecode } from 'jwt-decode';
 import {
   login as userLogin,
+  register as userRegister,
   logout as userLogout,
   getUserInfo,
   LoginData,
@@ -94,7 +95,20 @@ const useUserStore = defineStore('user', {
         throw err;
       }
     },
-
+    // Đăng ký  
+    async register(registerForm: RegisterData) {
+      try {
+        const payload = {
+          ...registerForm,
+          role: 'user' // Mặc định vai trò là 'user' khi đăng ký
+        };
+        const res = await userRegister(payload);
+        
+      } catch (err) {
+        clearToken();
+        throw err;
+      }
+    },
     // Callback khi logout
     logoutCallBack() {
       const appStore = useAppStore();
@@ -114,6 +128,7 @@ const useUserStore = defineStore('user', {
 
         await userLogout({ ...data });
       } finally {
+        document.body.setAttribute('arco-theme', 'linght');
         this.logoutCallBack();
       }
     },

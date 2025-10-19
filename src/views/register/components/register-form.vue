@@ -1,24 +1,25 @@
 <template>
-  <div class="login-form-wrapper">
-    <div class="login-form-title">{{ $t('login.form.title') }}</div>
-    <div class="login-form-error-msg">{{ errorMessage }}</div>
+  <div class="register-form-wrapper">
+    <div class="register-form-title">{{ $t('register.form.title') }}</div>
+    <div class="register-form-error-msg">{{ errorMessage }}</div>
     <a-form
-      ref="loginForm"
+      ref="registerForm"
       :model="userInfo"
-      class="login-form"
+      :rules="rules"
+      class="register-form"
       layout="vertical"
       @submit="handleSubmit"
     >
       <a-form-item
         field="phone"
-        :rules="[{ required: true, message: $t('login.form.phone.errMsg') }]"
+        :rules="[{ required: true, message: $t('register.form.phone.errMsg') }]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >
         <a-input
           class="cus-input"
           v-model="userInfo.phone"
-          :placeholder="$t('login.form.phone.placeholder')"
+          :placeholder="$t('register.form.phone.placeholder')"
         >
           <template #prefix>
             <icon-user />
@@ -26,15 +27,48 @@
         </a-input>
       </a-form-item>
       <a-form-item
+        field="email"
+        :rules="[{ required: true, message: $t('register.form.email.errMsg') }]"
+        :validate-trigger="['change', 'blur']"
+        hide-label
+      >
+        <a-input
+          class="cus-input"
+          v-model="userInfo.email"
+          :placeholder="$t('register.form.email.placeholder')"
+        >
+          <template #prefix>
+            <icon-email />
+          </template>
+        </a-input>
+      </a-form-item>
+      <a-form-item
         field="password"
-        :rules="[{ required: true, message: $t('login.form.password.errMsg') }]"
+        :rules="[{ required: true, message: $t('register.form.password.errMsg') }]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >
         <a-input-password
           class="cus-input"
           v-model="userInfo.password"
-          :placeholder="$t('login.form.password.placeholder')"
+          :placeholder="$t('register.form.password.placeholder')"
+          allow-clear
+        >
+          <template #prefix>
+            <icon-lock />
+          </template>
+        </a-input-password>
+      </a-form-item>
+      <a-form-item
+        field="repassword"
+        :rules="[{ required: true, message: $t('register.form.repassword.errMsg') }]"
+        :validate-trigger="['change', 'blur']"
+        hide-label
+      >
+        <a-input-password
+          class="cus-input"
+          v-model="userInfo.repassword"
+          :placeholder="$t('register.form.repassword.placeholder')"
           allow-clear
         >
           <template #prefix>
@@ -43,15 +77,13 @@
         </a-input-password>
       </a-form-item>
       <a-row class="grid-demo" justify="space-between">
-      
-        <a-link class="forget-password">{{ $t('login.form.forgetPassword') }}</a-link>
 
         <a-button class="custom-btn" html-type="submit" :loading="loading">
-          {{ $t('login.form.login') }}
+          {{ $t('register.form.register') }}
         </a-button>
   
-        <a-link href="/register" type="text" class="login-form-register-btn">
-          {{ $t('login.form.register') }}
+        <a-link href="/login" type="text" class="register-form-register-btn">
+          {{ $t('register.form.login') }}
         </a-link>
       </a-row>
     </a-form>
@@ -67,7 +99,7 @@
   import { useStorage } from '@vueuse/core';
   import { useUserStore } from '@/store';
   import useLoading from '@/hooks/loading';
-  import type { LoginData } from '@/api/auth';
+  import type { RegisterData } from '@/api/auth';
 
   const router = useRouter();
   const { t } = useI18n();
@@ -75,16 +107,36 @@
   const { loading, setLoading } = useLoading();
   const userStore = useUserStore();
 
-  const loginConfig = useStorage('login-config', {
-    rememberPassword: true,
-    phone: '0967591600', // 演示默认值
-    password: '123456', // demo default value
+  const userInfo = ref({
+    phone: '',
+    email: '',
+    password: '',
+    repassword: '',
   });
-  const userInfo = reactive({
-    phone: '0967591600',
-    password: '123456',
+  const rules = ref({
+    phone: [
+      { required: true, message: t('register.form.phone.errMsg') },
+    ],
+    password: [
+      { required: true, message: t('register.form.password.errMsg') },
+    ],
+    repassword: [
+      { required: true, message: t('register.form.repassword.errMsg') },
+      {
+        validator: (value: string, cb:any) => {
+          if (userInfo.value.password !== value ) {
+            cb(t('register.form.repassword.errMsg'))
+          } else {
+            cb()
+          }
+        },
+      },
+    ],
+    email: [
+      { type: 'email', required: true },
+    ],
   });
-  
+
   const handleSubmit = async ({
     errors,
     values,
@@ -96,19 +148,9 @@
     if (!errors) {
       setLoading(true);
       try {
-        await userStore.login(values as LoginData);
-        const { redirect, ...othersQuery } = router.currentRoute.value.query;
-        router.push({
-          name: (redirect as string) || 'Workplace',
-          query: {
-            ...othersQuery,
-          },
-        });
-        Message.success(t('login.form.login.success'));
-        const { rememberPassword } = loginConfig.value;
-        const { phone, password } = values;
-        loginConfig.value.phone = rememberPassword ? phone : '';
-        loginConfig.value.password = rememberPassword ? password : '';
+        await userStore.register(values as RegisterData);
+        Message.success(t('register.form.success'));
+
       } catch (err) {
         console.log(err);
 
@@ -118,13 +160,10 @@
       }
     }
   };
-  const setRememberPassword = (value: boolean) => {
-    loginConfig.value.rememberPassword = value;
-  };
 </script>
 
 <style lang="less" scoped>
-  .login-form {
+  .register-form {
     &-wrapper {
       width: 320px;
     }
@@ -209,7 +248,7 @@
         }
 
       }
-      .login-form{
+      .register-form{
         &-register-btn{
           width: 100%;
         }
