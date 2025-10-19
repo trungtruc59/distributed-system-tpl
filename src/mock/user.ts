@@ -63,7 +63,7 @@ setupMock({
     });
 
     // 登出
-    Mock.mock(new RegExp('/api/auth/logout'), () => {
+    Mock.mock(new RegExp('/api/user/logout'), () => {
       return successResponseWrap(null);
     });
 

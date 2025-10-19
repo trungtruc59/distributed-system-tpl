@@ -5,8 +5,8 @@ import {
   logout as userLogout,
   getUserInfo,
   LoginData,
-} from '@/api/user';
-import { setToken, clearToken } from '@/utils/auth';
+} from '@/api/auth';
+import { setToken, clearToken, setRefreshToken } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { RoleType, UserState } from './types';
 import useAppStore from '../app';
@@ -72,18 +72,23 @@ const useUserStore = defineStore('user', {
     // Đăng nhập
     async login(loginForm: LoginData) {
       try {
-        const data = await userLogin(loginForm);
-        const token = { data };
-        setToken(token);
+        const res = await userLogin(loginForm);
+        console.log(res.data);
+       
+        setToken(res.data.token);
+        // Lưu refreshToken
+        setRefreshToken(res.data.refreshToken);
+        
         // Giải mã token để lấy role
-        const decoded = jwtDecode<DecodedToken>(token.data.token);
+        const decoded = jwtDecode<DecodedToken>(res.data.token);
+        
         this.role = (decoded.role as RoleType) || '';
         this.email = decoded.email || '';
         this.accountId = decoded.account_id || '';
         // Lấy thông tin user
-        const userInfo = await getUserInfo();
-        this.setInfo(userInfo);
-        return Promise.resolve(data);
+        const userInfo = await getUserInfo({ accountId: this.accountId });
+        this.setInfo(userInfo.data);
+        return Promise.resolve(res);
         
       } catch (err) {
         clearToken();
@@ -103,7 +108,12 @@ const useUserStore = defineStore('user', {
     // Đăng xuất
     async logout() {
       try {
-        await userLogout();
+        const getRefreshToken = localStorage.getItem('getRefreshToken') || '';
+        const data = {
+          getRefreshToken
+        }
+        
+        await userLogout({...data});
       } finally {
         this.logoutCallBack();
       }

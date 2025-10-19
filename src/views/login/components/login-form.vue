@@ -1,7 +1,6 @@
 <template>
   <div class="login-form-wrapper">
     <div class="login-form-title">{{ $t('login.form.title') }}</div>
-    <div class="login-form-sub-title">{{ $t('login.form.title') }}</div>
     <div class="login-form-error-msg">{{ errorMessage }}</div>
     <a-form
       ref="loginForm"
@@ -17,6 +16,7 @@
         hide-label
       >
         <a-input
+          class="cus-input"
           v-model="userInfo.phone"
           :placeholder="$t('login.form.phone.placeholder')"
         >
@@ -32,6 +32,7 @@
         hide-label
       >
         <a-input-password
+          class="cus-input"
           v-model="userInfo.password"
           :placeholder="$t('login.form.password.placeholder')"
           allow-clear
@@ -41,24 +42,18 @@
           </template>
         </a-input-password>
       </a-form-item>
-      <a-space :size="16" direction="vertical">
-        <div class="login-form-password-actions">
-          <a-checkbox
-            checked="rememberPassword"
-            :model-value="loginConfig.rememberPassword"
-            @change="setRememberPassword as any"
-          >
-            {{ $t('login.form.rememberPassword') }}
-          </a-checkbox>
-          <a-link>{{ $t('login.form.forgetPassword') }}</a-link>
-        </div>
-        <a-button type="primary" html-type="submit" long :loading="loading">
+      <a-row class="grid-demo" justify="space-between">
+      
+        <a-link class="forget-password">{{ $t('login.form.forgetPassword') }}</a-link>
+
+        <a-button class="custom-btn" html-type="submit" :loading="loading">
           {{ $t('login.form.login') }}
         </a-button>
-        <a-button type="text" long class="login-form-register-btn">
+  
+        <a-button type="text" class="login-form-register-btn">
           {{ $t('login.form.register') }}
         </a-button>
-      </a-space>
+      </a-row>
     </a-form>
   </div>
 </template>
@@ -72,7 +67,7 @@
   import { useStorage } from '@vueuse/core';
   import { useUserStore } from '@/store';
   import useLoading from '@/hooks/loading';
-  import type { LoginData } from '@/api/user';
+  import type { LoginData } from '@/api/auth';
 
   const router = useRouter();
   const { t } = useI18n();
@@ -89,7 +84,7 @@
     phone: '0967591600',
     password: '123456',
   });
-
+  
   const handleSubmit = async ({
     errors,
     values,
@@ -116,7 +111,7 @@
         loginConfig.value.password = rememberPassword ? password : '';
       } catch (err) {
         console.log(err);
-        
+
         errorMessage.value = (err as Error).message;
       } finally {
         setLoading(false);
@@ -139,6 +134,9 @@
       font-weight: 500;
       font-size: 24px;
       line-height: 32px;
+      text-align: center;
+      font-family: 'Roboto Condensed', sans-serif;
+      text-transform: uppercase;
     }
 
     &-sub-title {
@@ -156,10 +154,66 @@
     &-password-actions {
       display: flex;
       justify-content: space-between;
+      width: 100%;
     }
 
     &-register-btn {
-      color: var(--color-text-3) !important;
+      background: #fff;
+      color: #a0a0a0;
+      font-size: 16px;
+      padding: 0 20px;
+      height: 40px;
+      border-radius: 50px;
+      opacity: 0.5;
+      &:hover {
+        opacity: 1;
+        background-color: #6250f6;
+        border-color: #6250f6;
+        color: #fff;
+      }
+    }
+    .custom-btn {
+      background-color: #1a1a1a;
+      border-color: #1a1a1a;
+      color: #fff;
+      font-size: 16px;
+      padding: 0 27px;
+      height: 40px;
+      border-radius: 50px;
+      &:hover {
+        background-color: #6250f6;
+        border-color: #6250f6;
+      }
+
+    }
+    .forget-password {
+      color: #1a1a1a;
+      width: 100%;
+      margin-bottom: 20px;
+      justify-content: start;
+      &:hover{
+        background: transparent;
+        color: #6250f6;
+      }
+    }
+    .cus-input{
+      height: 50px;
+    }
+    @media (max-width: 768px) {
+      .custom-btn {
+        width: 100%;
+        margin-bottom: 10px;
+        &:hover {
+          background-color: #6250f6;
+          border-color: #6250f6;
+        }
+
+      }
+      .login-form{
+        &-register-btn{
+          width: 100%;
+        }
+      }
     }
   }
 </style>

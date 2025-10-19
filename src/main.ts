@@ -10,6 +10,7 @@ import './mock';
 import App from './App.vue';
 
 import '@/assets/style/global.less';
+import '@/assets/style/font.less';
 import '@/api/interceptor';
 
 const app = createApp(App);
