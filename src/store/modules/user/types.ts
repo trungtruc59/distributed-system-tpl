@@ -7,6 +7,6 @@ export interface UserState {
   locationName?: string;
   phone?: string;
   registrationDate?: string;
-  id?: string;
+  accountId?: string;
   role: RoleType;
 }

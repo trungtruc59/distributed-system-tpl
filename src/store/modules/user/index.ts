@@ -85,7 +85,7 @@ const useUserStore = defineStore('user', {
 
         this.role = (decoded.role as RoleType) || '';
         this.email = decoded.email || '';
-        this.id = decoded.account_id || '';
+        this.accountId = decoded.account_id || '';
         // Lấy thông tin user
         this.setInfo((decoded?.details || {}) as Partial<UserState>);
         return Promise.resolve(res);
