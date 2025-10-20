@@ -1,0 +1,1 @@
+import{D as e,C as o}from"./arco.c560203c.js";import{_ as r}from"./index.27c48d7c.js";import"./chart.04f8f083.js";import"./vue.d956ed5e.js";const t={};function c(n,l){return o(),e("div",null,"Hello World")}const m=r(t,[["render",c]]);export{m as default};

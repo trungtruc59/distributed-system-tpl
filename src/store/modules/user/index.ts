@@ -6,6 +6,7 @@ import {
   logout as userLogout,
   getUserInfo,
   LoginData,
+  RegisterData,
   LoginRes,
 } from '@/api/auth';
 import { setToken, clearToken, setRefreshToken } from '@/utils/auth';
