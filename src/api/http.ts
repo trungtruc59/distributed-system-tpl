@@ -36,7 +36,7 @@ class Http {
       headers?: Record<string, any>;
       config?: AxiosRequestConfig;
     } = {}
-  ): Promise<HttpResponse<T>> {
+  ): Promise<T | HttpResponse<T>> {
     const url = Http.buildUrl(endpoint);
     const finalHeaders = Http.buildHeaders(headers);
     return axios.request<HttpResponse<T>>({
@@ -53,7 +53,7 @@ class Http {
     endpoint: string,
     params: Record<string, any> = {},
     headers: Record<string, any> = {}
-  ): Promise<HttpResponse<T>> {
+  ): Promise<T | HttpResponse<T>> {
     return Http.request<T>('GET', endpoint, { params, headers });
   }
 
@@ -61,7 +61,7 @@ class Http {
     endpoint: string,
     body: Record<string, any> = {},
     headers: Record<string, any> = {}
-  ): Promise<HttpResponse<T>> {
+  ): Promise<T | HttpResponse<T>> {
     return Http.request<T>('POST', endpoint, { data: body, headers });
   }
 
@@ -69,7 +69,7 @@ class Http {
     endpoint: string,
     body: Record<string, any> = {},
     headers: Record<string, any> = {}
-  ): Promise<HttpResponse<T>> {
+  ): Promise<T | HttpResponse<T>> {
     return Http.request<T>('PUT', endpoint, { data: body, headers });
   }
 
@@ -77,7 +77,7 @@ class Http {
     endpoint: string,
     body: Record<string, any> = {},
     headers: Record<string, any> = {}
-  ): Promise<HttpResponse<T>> {
+  ): Promise<T | HttpResponse<T>> {
     return Http.request<T>('PATCH', endpoint, { data: body, headers });
   }
 
@@ -85,7 +85,7 @@ class Http {
     endpoint: string,
     params: Record<string, any> = {},
     headers: Record<string, any> = {}
-  ): Promise<HttpResponse<T>> {
+  ): Promise<T | HttpResponse<T>> {
     // Some APIs expect query params on DELETE; adapt here.
     return Http.request<T>('DELETE', endpoint, { params, headers });
   }

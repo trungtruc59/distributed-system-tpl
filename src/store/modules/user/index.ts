@@ -5,6 +5,7 @@ import {
   logout as userLogout,
   getUserInfo,
   LoginData,
+  LoginRes,
 } from '@/api/auth';
 import { setToken, clearToken, setRefreshToken } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
@@ -17,6 +18,7 @@ interface DecodedToken {
   account_id?: string;
   exp?: number;
   iat?: number;
+  details?: UserState;
 }
 
 const useUserStore = defineStore('user', {
@@ -38,7 +40,7 @@ const useUserStore = defineStore('user', {
     // certification: undefined,
     role: 'user', // Mặc định là 'user'
   }),
-  
+
   getters: {
     userInfo(state: UserState): UserState {
       return { ...state };
@@ -72,24 +74,21 @@ const useUserStore = defineStore('user', {
     // Đăng nhập
     async login(loginForm: LoginData) {
       try {
-        const res = await userLogin(loginForm);
-        console.log(res.data);
-       
-        setToken(res.data.token);
+        const res = (await userLogin(loginForm)) as LoginRes;
+
+        setToken(res.token);
         // Lưu refreshToken
-        setRefreshToken(res.data.refreshToken);
-        
+        setRefreshToken(res.refreshToken);
+
         // Giải mã token để lấy role
-        const decoded = jwtDecode<DecodedToken>(res.data.token);
-        
+        const decoded = jwtDecode<DecodedToken>(res.token);
+
         this.role = (decoded.role as RoleType) || '';
         this.email = decoded.email || '';
-        this.accountId = decoded.account_id || '';
+        this.id = decoded.account_id || '';
         // Lấy thông tin user
-        const userInfo = await getUserInfo({ accountId: this.accountId });
-        this.setInfo(userInfo.data);
+        this.setInfo((decoded?.details || {}) as Partial<UserState>);
         return Promise.resolve(res);
-        
       } catch (err) {
         clearToken();
         throw err;
@@ -110,10 +109,10 @@ const useUserStore = defineStore('user', {
       try {
         const getRefreshToken = localStorage.getItem('getRefreshToken') || '';
         const data = {
-          getRefreshToken
-        }
-        
-        await userLogout({...data});
+          getRefreshToken,
+        };
+
+        await userLogout({ ...data });
       } finally {
         this.logoutCallBack();
       }
