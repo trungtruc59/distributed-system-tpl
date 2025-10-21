@@ -21,6 +21,7 @@
   import Footer from '@/components/footer/index.vue';
   import LoginForm from './components/login-form.vue';
 
+  console.log('Tue21Oct0840');
 </script>
 
 <style lang="less" scoped>
@@ -40,15 +41,15 @@
       align-items: center;
       justify-content: center;
       padding-bottom: 40px;
-      &-inner{
+      &-inner {
         width: 100%;
         max-width: 820px;
         background: rgba(255, 255, 255, 0.9);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         display: flex;
         align-items: center;
-        
-        &-banner{
+
+        &-banner {
           width: 50%;
           img {
             width: 100%;
@@ -78,7 +79,7 @@
     z-index: 1;
     display: inline-flex;
     align-items: center;
-    & img{
+    & img {
       max-width: 130px;
     }
     &-text {
@@ -107,8 +108,8 @@
       }
     }
     .content {
-      &-inner{
-        &-banner{
+      &-inner {
+        &-banner {
           width: 50%;
           align-items: stretch;
         }
@@ -117,15 +118,15 @@
   }
   @media (max-width: 500px) {
     .content {
-      &-inner{
-        &-banner{
+      &-inner {
+        &-banner {
           width: 50%;
           display: none;
         }
       }
     }
-    .container{
-      .login-form-wrapper{
+    .container {
+      .login-form-wrapper {
         padding: 48px 40px 32px;
         width: 100%;
       }
