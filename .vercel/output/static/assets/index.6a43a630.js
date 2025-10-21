@@ -1,1 +1,0 @@
-import{_ as t}from"./index.27c48d7c.js";import{C as a,aE as _,aH as r,aM as s,ba as c}from"./arco.c560203c.js";const n={};function d(i,e){const o=c;return a(),_(o,{class:"footer"},{default:r(()=>[...e[0]||(e[0]=[s("Copyright \xA9 2025 Boba. All rights reserved.",-1)])]),_:1})}const l=t(n,[["render",d],["__scopeId","data-v-825eca07"]]);export{l as F};
