@@ -3,7 +3,7 @@ export default {
   'login.form.phone.errMsg': 'Số điện thoại không được để trống',
   'login.form.password.errMsg': 'Mật khẩu không được để trống',
   'login.form.login.errMsg': 'Lỗi đăng nhập, vui lòng làm mới và thử lại',
-  'login.form.login.success': 'Chào mừng bạn sử dụng',
+  'login.form.login.success': 'Chào mừng',
   'login.form.phone.placeholder': 'Số điện thoại',
   'login.form.password.placeholder': 'Mật khẩu',
   'login.form.rememberPassword': 'Ghi nhớ mật khẩu',

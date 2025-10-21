@@ -1,8 +1,10 @@
 <template>
   <a-config-provider :locale="locale">
-    <router-view />
-    <global-setting />
-  </a-config-provider>
+      <transition name="fade-scale" mode="out-in">
+        <router-view />
+      </transition>
+      <global-setting />
+    </a-config-provider>
 </template>
 
 <script lang="ts" setup>
@@ -24,3 +26,18 @@
     }
   });
 </script>
+<style scoped>
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: all 0.5s ease;
+}
+
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: scale(0.98);
+}
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(1.02);
+}
+</style>

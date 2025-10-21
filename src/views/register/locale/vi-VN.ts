@@ -1,8 +1,12 @@
 export default {
   'register.form.title': 'Đăng ký thành viên',
   'register.form.phone.errMsg': 'Số điện thoại không được để trống',
+  'register.form.phone.notvalid': 'Số điện thoại không hợp lệ',
+  'register.form.email.errMsg': 'Email không được để trống',
+  'register.form.email.notvalid': 'Email không hợp lệ',
   'register.form.password.errMsg': 'Mật khẩu không được để trống',
   'register.form.repassword.errMsg': 'Nhập lại mật khẩu không được để trống',
+  'register.form.repassword.notmatch': 'Mật khẩu nhập lại không đúng',
   'register.form.register.errMsg': 'Lỗi đăng nhập, vui lòng làm mới và thử lại',
   'register.form.register.success': 'Chào mừng bạn sử dụng',
   'register.form.phone.placeholder': 'Số điện thoại',

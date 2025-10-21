@@ -97,7 +97,7 @@
     if (props.toolbar === 'minimal') {
       toolbarConfig = minimalToolbar;
     } else if (Array.isArray(props.toolbar)) {
-      toolbarConfig = props.toolbar;
+      toolbarConfig = props.toolbar as any;
     }
 
     return {

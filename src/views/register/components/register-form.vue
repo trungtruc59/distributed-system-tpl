@@ -12,7 +12,6 @@
     >
       <a-form-item
         field="phone"
-        :rules="[{ required: true, message: $t('register.form.phone.errMsg') }]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >
@@ -20,6 +19,9 @@
           class="cus-input"
           v-model="userInfo.phone"
           :placeholder="$t('register.form.phone.placeholder')"
+          @input="userInfo.phone = userInfo.phone.replace(/\D/g, '')"
+          type="tel"
+          inputmode="numeric"
         >
           <template #prefix>
             <icon-user />
@@ -28,7 +30,6 @@
       </a-form-item>
       <a-form-item
         field="email"
-        :rules="[{ required: true, message: $t('register.form.email.errMsg') }]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >
@@ -44,7 +45,6 @@
       </a-form-item>
       <a-form-item
         field="password"
-        :rules="[{ required: true, message: $t('register.form.password.errMsg') }]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >
@@ -61,7 +61,6 @@
       </a-form-item>
       <a-form-item
         field="repassword"
-        :rules="[{ required: true, message: $t('register.form.repassword.errMsg') }]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >
@@ -116,16 +115,50 @@
   const rules = ref({
     phone: [
       { required: true, message: t('register.form.phone.errMsg') },
+      { validator: (value: string, cb:any) => {
+          const phoneRegex = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-4|6-9])[0-9]{7}$/;
+          if (!phoneRegex.test(value)) {
+            cb(t('register.form.phone.notvalid'));
+          } else {
+            cb()
+          }
+        },
+      },
+      { pattern: /^[0-9]+$/, message: t('register.form.phone.errMsg') },
     ],
     password: [
       { required: true, message: t('register.form.password.errMsg') },
+      { minLength: 5, message: 'Mật khẩu phải có ít nhất 5 ký tự' },
+      { 
+        validator: (value: string, cb: (error?: string) => void) => {
+          if (!value) {
+            cb('Vui lòng nhập mật khẩu');
+            return;
+          }
+
+          if (value.length < 5) {
+            cb('Mật khẩu phải có ít nhất 5 ký tự');
+            return;
+          }
+
+          const hasUpper = /[A-Z]/.test(value);
+          const hasLower = /[a-z]/.test(value);
+          const hasSpecial = /[\W_]/.test(value);
+
+          if (!hasUpper || !hasLower || !hasSpecial) {
+            cb('Phải có ít nhất 1 chữ hoa, 1 chữ thường và 1 ký tự đặc biệt');
+          } else {
+            cb(); // hợp lệ
+          }
+        },
+      },
     ],
     repassword: [
       { required: true, message: t('register.form.repassword.errMsg') },
       {
         validator: (value: string, cb:any) => {
           if (userInfo.value.password !== value ) {
-            cb(t('register.form.repassword.errMsg'))
+            cb(t('register.form.repassword.notmatch'));
           } else {
             cb()
           }
@@ -133,7 +166,17 @@
       },
     ],
     email: [
-      { type: 'email', required: true },
+      { required: true, message: t('register.form.email.errMsg') },
+      {
+        validator: (value: string, cb:any) => {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(value)) {
+            cb(t('register.form.email.notvalid'));
+          } else {
+            cb()
+          }
+        },
+      },
     ],
   });
 
@@ -149,6 +192,13 @@
       setLoading(true);
       try {
         await userStore.register(values as RegisterData);
+        const { redirect, ...othersQuery } = router.currentRoute.value.query;
+        router.push({
+          name: (redirect as string) || 'login',
+          query: {
+            ...othersQuery,
+          },
+        });
         Message.success(t('register.form.success'));
 
       } catch (err) {

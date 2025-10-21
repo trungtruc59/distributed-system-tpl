@@ -2,6 +2,7 @@ import type { RouteRecordNormalized } from 'vue-router';
 import { UserState } from '@/store/modules/user/types';
 import http from './http';
 
+
 export interface LoginData {
   phone: string;
   password: string;
@@ -26,8 +27,8 @@ export function login(data: LoginData) {
 export function register(data: RegisterData) {
   return http.post('api/auth/register', data);
 }
-export function logout(data: Logout) {
-  return http.post<Logout>('api/auth/logout', data);
+export function logout() {
+  return Promise.resolve();
 }
 
 export function getUserInfo(data: { accountId: string }) {
@@ -37,3 +38,4 @@ export function getUserInfo(data: { accountId: string }) {
 export function getMenuList() {
   return http.post<RouteRecordNormalized[]>('api/user/menu');
 }
+

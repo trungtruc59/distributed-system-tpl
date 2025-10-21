@@ -5,13 +5,13 @@
     <a-form
       ref="loginForm"
       :model="userInfo"
+      :rules="rules"
       class="login-form"
       layout="vertical"
       @submit="handleSubmit"
     >
       <a-form-item
         field="phone"
-        :rules="[{ required: true, message: $t('login.form.phone.errMsg') }]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >
@@ -19,6 +19,9 @@
           class="cus-input"
           v-model="userInfo.phone"
           :placeholder="$t('login.form.phone.placeholder')"
+          @input="userInfo.phone = userInfo.phone.replace(/\D/g, '')"
+          type="tel"
+          inputmode="numeric"
         >
           <template #prefix>
             <icon-user />
@@ -27,7 +30,6 @@
       </a-form-item>
       <a-form-item
         field="password"
-        :rules="[{ required: true, message: $t('login.form.password.errMsg') }]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >
@@ -75,14 +77,33 @@
   const { loading, setLoading } = useLoading();
   const userStore = useUserStore();
 
-  const loginConfig = useStorage('login-config', {
-    rememberPassword: true,
-    phone: '0967591600', // 演示默认值
-    password: '123456', // demo default value
+  const rules = ref({
+    phone: [
+      { required: true, message: t('register.form.phone.errMsg') },
+      { validator: (value: string, cb:any) => {
+          const phoneRegex = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-4|6-9])[0-9]{7}$/;
+          if (!phoneRegex.test(value)) {
+            cb(t('register.form.phone.notvalid'));
+          } else {
+            cb()
+          }
+        },
+      },
+      { pattern: /^[0-9]+$/, message: t('register.form.phone.errMsg') },
+    ],
+    password: [
+      { required: true, message: t('register.form.password.errMsg') },
+    ],
   });
-  const userInfo = reactive({
-    phone: '0967591600',
-    password: '123456',
+
+  const loginConfig = useStorage('login-config', {
+    rememberPassword: false,
+    phone: '', // 演示默认值
+    password: '', // demo default value
+  });
+  const userInfo = ref({
+    phone: '0967591602',
+    password: 'Tr@1234',
   });
   
   const handleSubmit = async ({

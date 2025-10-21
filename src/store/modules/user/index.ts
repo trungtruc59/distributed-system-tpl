@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import {
   login as userLogin,
   register as userRegister,
-  logout as userLogout,
+  logout,
   getUserInfo,
   LoginData,
   RegisterData,
@@ -122,14 +122,12 @@ const useUserStore = defineStore('user', {
     // Đăng xuất
     async logout() {
       try {
-        const getRefreshToken = localStorage.getItem('getRefreshToken') || '';
-        const data = {
-          getRefreshToken,
-        };
-
-        await userLogout({ ...data });
+        await logout();
       } finally {
-        document.body.setAttribute('arco-theme', 'linght');
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        sessionStorage.clear();
+        document.body.setAttribute('arco-theme', 'light');
         this.logoutCallBack();
       }
     },
