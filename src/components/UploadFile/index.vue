@@ -15,15 +15,17 @@
 <script setup lang="ts">
   import { ref } from 'vue';
   import uploadFile from '@/api/upload';
+  import { FileItem, RequestOption } from '@arco-design/web-vue';
 
-  const fileList = ref<any[]>([]);
+  const fileList = ref<FileItem[]>([]);
   const accept = 'image/*';
 
-  function handleCustomRequest(option) {
-    const { file, onProgress, onSuccess, onError } = option;
+  function handleCustomRequest(option: RequestOption) {
+    const { onSuccess, onError } = option;
 
+    const file = fileList.value[0].file as File;
     const formData = new FormData();
-    formData.append('file', fileList.value[0].file as File);
+    formData.append('file', file);
 
     console.log({ file });
 
@@ -33,23 +35,19 @@
     // Ví dụ dùng fetch / axios:
     uploadFile(formData)
       .then(async (res) => {
-        console.log({ res });
-
         if (!res.url) {
           throw new Error('Upload failed');
         }
         // const data = await res.json();
         // data có thể trả về url của file
-        onSuccess(res, file);
+        onSuccess(res);
       })
       .catch((err) => {
         onError(err);
       });
   }
 
-  function handleChange(files) {
-    console.log({ files });
-
-    fileList.value = files;
+  function handleChange(_: FileItem[], fileItem: FileItem) {
+    fileList.value = [fileItem];
   }
 </script>
