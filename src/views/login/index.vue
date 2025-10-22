@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <div class="logo">
-      <img src="@/assets/btn-logo.png" alt="Logo" />
+      <a-link :hoverable="false" @click="router.push({ name: 'home' })">
+        <img src="@/assets/btn-logo.png" alt="Logo" />
+      </a-link>
     </div>
     <div class="content">
       <div class="content-inner">
@@ -19,7 +21,10 @@
 
 <script lang="ts" setup>
   import Footer from '@/components/footer/index.vue';
+  import { useRouter } from 'vue-router';
   import LoginForm from './components/login-form.vue';
+
+  const router = useRouter();
 </script>
 
 <style lang="less" scoped>
