@@ -24,6 +24,7 @@ import locale404 from '@/views/exception/404/locale/vi-VN';
 import locale500 from '@/views/exception/500/locale/vi-VN';
 
 import localeUserInfo from '@/views/user/info/locale/vi-VN';
+import localeUserList from '@/views/user/list/locale/vi-VN';
 import localeUserSetting from '@/views/user/setting/locale/vi-VN';
 /** simple end */
 import localeSettings from './vi-VN/settings';
@@ -64,6 +65,7 @@ export default {
   ...locale404,
   ...locale500,
   ...localeUserInfo,
+  ...localeUserList,
   ...localeUserSetting,
   /** simple end */
 };

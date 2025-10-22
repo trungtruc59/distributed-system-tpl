@@ -1,4 +1,5 @@
 export default {
+  'menu.user.list': 'Danh sách người dùng',
   'menu.user.info': 'Thông tin người dùng',
   'userInfo.editUserInfo': 'Chỉnh sửa thông tin',
   'userInfo.tab.title.overview': 'Tổng quan',
@@ -12,4 +13,14 @@ export default {
   'userInfo.nodata': 'Không có dữ liệu',
   'userInfo.visits.unit': 'lượt',
   'userInfo.visits.lastMonth': 'Tháng trước',
+
+  // list page
+  'user.create': 'Thêm người dùng',
+  'user.list.index': 'STT',
+  'user.list.fullname': 'Họ và tên',
+  'user.list.email': 'Email',
+  'user.list.phone': 'Số điện thoại',
+  'user.list.role': 'Vai trò',
+  'user.list.status': 'Trạng thái',
+  'user.list.action': 'Hành động',
 };
