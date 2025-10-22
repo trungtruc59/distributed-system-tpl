@@ -6,7 +6,7 @@ const publicRoutes = [
       {
         path: '',
         name: 'home',
-        component: () => import('@/views/template/index.vue'),
+        component: () => import('@/views/user-public-page/index.vue'),
         meta: { requiresAuth: false },
       },
       {
