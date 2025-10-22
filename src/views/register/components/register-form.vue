@@ -16,12 +16,12 @@
         hide-label
       >
         <a-input
-          class="cus-input"
           v-model="userInfo.phone"
+          class="cus-input"
           :placeholder="$t('register.form.phone.placeholder')"
-          @input="userInfo.phone = userInfo.phone.replace(/\D/g, '')"
           type="tel"
           inputmode="numeric"
+          @input="userInfo.phone = userInfo.phone.replace(/\D/g, '')"
         >
           <template #prefix>
             <icon-user />
@@ -34,8 +34,8 @@
         hide-label
       >
         <a-input
-          class="cus-input"
           v-model="userInfo.email"
+          class="cus-input"
           :placeholder="$t('register.form.email.placeholder')"
         >
           <template #prefix>
@@ -49,8 +49,8 @@
         hide-label
       >
         <a-input-password
-          class="cus-input"
           v-model="userInfo.password"
+          class="cus-input"
           :placeholder="$t('register.form.password.placeholder')"
           allow-clear
         >
@@ -65,8 +65,8 @@
         hide-label
       >
         <a-input-password
-          class="cus-input"
           v-model="userInfo.repassword"
+          class="cus-input"
           :placeholder="$t('register.form.repassword.placeholder')"
           allow-clear
         >
@@ -76,12 +76,15 @@
         </a-input-password>
       </a-form-item>
       <a-row class="grid-demo" justify="space-between">
-
         <a-button class="custom-btn" html-type="submit" :loading="loading">
           {{ $t('register.form.register') }}
         </a-button>
-  
-        <a-link href="/login" type="text" class="register-form-register-btn">
+
+        <a-link
+          type="text"
+          class="register-form-register-btn"
+          @click="handleRedirectToLoginPage"
+        >
           {{ $t('register.form.login') }}
         </a-link>
       </a-row>
@@ -115,12 +118,14 @@
   const rules = ref({
     phone: [
       { required: true, message: t('register.form.phone.errMsg') },
-      { validator: (value: string, cb:any) => {
-          const phoneRegex = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-4|6-9])[0-9]{7}$/;
+      {
+        validator: (value: string, cb: any) => {
+          const phoneRegex =
+            /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-4|6-9])[0-9]{7}$/;
           if (!phoneRegex.test(value)) {
             cb(t('register.form.phone.notvalid'));
           } else {
-            cb()
+            cb();
           }
         },
       },
@@ -129,7 +134,7 @@
     password: [
       { required: true, message: t('register.form.password.errMsg') },
       { minLength: 5, message: 'Mật khẩu phải có ít nhất 5 ký tự' },
-      { 
+      {
         validator: (value: string, cb: (error?: string) => void) => {
           if (!value) {
             cb('Vui lòng nhập mật khẩu');
@@ -156,11 +161,11 @@
     repassword: [
       { required: true, message: t('register.form.repassword.errMsg') },
       {
-        validator: (value: string, cb:any) => {
-          if (userInfo.value.password !== value ) {
+        validator: (value: string, cb: any) => {
+          if (userInfo.value.password !== value) {
             cb(t('register.form.repassword.notmatch'));
           } else {
-            cb()
+            cb();
           }
         },
       },
@@ -168,17 +173,21 @@
     email: [
       { required: true, message: t('register.form.email.errMsg') },
       {
-        validator: (value: string, cb:any) => {
+        validator: (value: string, cb: any) => {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(value)) {
             cb(t('register.form.email.notvalid'));
           } else {
-            cb()
+            cb();
           }
         },
       },
     ],
   });
+
+  const handleRedirectToLoginPage = () => {
+    router.push({ name: 'login' });
+  };
 
   const handleSubmit = async ({
     errors,
@@ -200,7 +209,6 @@
           },
         });
         Message.success(t('register.form.success'));
-
       } catch (err) {
         console.log(err);
 
@@ -273,19 +281,18 @@
         background-color: #6250f6;
         border-color: #6250f6;
       }
-
     }
     .forget-password {
       color: #1a1a1a;
       width: 100%;
       margin-bottom: 20px;
       justify-content: start;
-      &:hover{
+      &:hover {
         background: transparent;
         color: #6250f6;
       }
     }
-    .cus-input{
+    .cus-input {
       height: 50px;
     }
     @media (max-width: 768px) {
@@ -296,10 +303,9 @@
           background-color: #6250f6;
           border-color: #6250f6;
         }
-
       }
-      .register-form{
-        &-register-btn{
+      .register-form {
+        &-register-btn {
           width: 100%;
         }
       }

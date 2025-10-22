@@ -20,8 +20,6 @@
 <script lang="ts" setup>
   import Footer from '@/components/footer/index.vue';
   import LoginForm from './components/login-form.vue';
-
-  console.log('Tue21Oct0840');
 </script>
 
 <style lang="less" scoped>

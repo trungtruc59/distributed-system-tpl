@@ -16,12 +16,12 @@
         hide-label
       >
         <a-input
-          class="cus-input"
           v-model="userInfo.phone"
+          class="cus-input"
           :placeholder="$t('login.form.phone.placeholder')"
-          @input="userInfo.phone = userInfo.phone.replace(/\D/g, '')"
           type="tel"
           inputmode="numeric"
+          @input="userInfo.phone = userInfo.phone.replace(/\D/g, '')"
         >
           <template #prefix>
             <icon-user />
@@ -34,8 +34,8 @@
         hide-label
       >
         <a-input-password
-          class="cus-input"
           v-model="userInfo.password"
+          class="cus-input"
           :placeholder="$t('login.form.password.placeholder')"
           allow-clear
         >
@@ -45,14 +45,19 @@
         </a-input-password>
       </a-form-item>
       <a-row class="grid-demo" justify="space-between">
-      
-        <a-link class="forget-password">{{ $t('login.form.forgetPassword') }}</a-link>
+        <a-link class="forget-password">{{
+          $t('login.form.forgetPassword')
+        }}</a-link>
 
         <a-button class="custom-btn" html-type="submit" :loading="loading">
           {{ $t('login.form.login') }}
         </a-button>
-  
-        <a-link href="/register" type="text" class="login-form-register-btn">
+
+        <a-link
+          type="text"
+          class="login-form-register-btn"
+          @click="handleRedirectToRegisterPage"
+        >
           {{ $t('login.form.register') }}
         </a-link>
       </a-row>
@@ -77,23 +82,27 @@
   const { loading, setLoading } = useLoading();
   const userStore = useUserStore();
 
+  const handleRedirectToRegisterPage = () => {
+    router.push({ name: 'register' });
+  };
+
   const rules = ref({
     phone: [
       { required: true, message: t('register.form.phone.errMsg') },
-      { validator: (value: string, cb:any) => {
-          const phoneRegex = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-4|6-9])[0-9]{7}$/;
+      {
+        validator: (value: string, cb: any) => {
+          const phoneRegex =
+            /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-4|6-9])[0-9]{7}$/;
           if (!phoneRegex.test(value)) {
             cb(t('register.form.phone.notvalid'));
           } else {
-            cb()
+            cb();
           }
         },
       },
       { pattern: /^[0-9]+$/, message: t('register.form.phone.errMsg') },
     ],
-    password: [
-      { required: true, message: t('register.form.password.errMsg') },
-    ],
+    password: [{ required: true, message: t('register.form.password.errMsg') }],
   });
 
   const loginConfig = useStorage('login-config', {
@@ -105,7 +114,7 @@
     phone: '0967591602',
     password: 'Tr@1234',
   });
-  
+
   const handleSubmit = async ({
     errors,
     values,
@@ -205,19 +214,18 @@
         background-color: #6250f6;
         border-color: #6250f6;
       }
-
     }
     .forget-password {
       color: #1a1a1a;
       width: 100%;
       margin-bottom: 20px;
       justify-content: start;
-      &:hover{
+      &:hover {
         background: transparent;
         color: #6250f6;
       }
     }
-    .cus-input{
+    .cus-input {
       height: 50px;
     }
     @media (max-width: 768px) {
@@ -228,10 +236,9 @@
           background-color: #6250f6;
           border-color: #6250f6;
         }
-
       }
-      .login-form{
-        &-register-btn{
+      .login-form {
+        &-register-btn {
           width: 100%;
         }
       }
