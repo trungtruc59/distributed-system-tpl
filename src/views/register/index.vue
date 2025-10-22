@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <div class="logo">
-      <img src="@/assets/btn-logo.png" alt="Logo" />
+      <a-link :hoverable="false" @click="router.push({ name: 'home' })">
+        <img src="@/assets/btn-logo.png" alt="Logo" />
+      </a-link>
     </div>
     <div class="content">
       <div class="content-inner">
@@ -19,14 +21,17 @@
 
 <script lang="ts" setup>
   import Footer from '@/components/footer/index.vue';
+  import { useRouter } from 'vue-router';
   import RegisterForm from './components/register-form.vue';
 
+  const router = useRouter();
 </script>
 
 <style lang="less" scoped>
   .container {
     display: flex;
-    height: 100%;min-height: 100vh;
+    height: 100%;
+    min-height: 100vh;
     background: url('@/assets/background.jpg') no-repeat center/cover;
     .banner {
       width: 550px;
@@ -40,15 +45,15 @@
       align-items: center;
       justify-content: center;
       padding-bottom: 40px;
-      &-inner{
+      &-inner {
         width: 100%;
         max-width: 820px;
         background: rgba(255, 255, 255, 0.9);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         display: flex;
         align-items: center;
-        
-        &-banner{
+
+        &-banner {
           width: 50%;
           img {
             width: 100%;
@@ -78,7 +83,7 @@
     z-index: 1;
     display: inline-flex;
     align-items: center;
-    & img{
+    & img {
       max-width: 130px;
     }
     &-text {
@@ -107,8 +112,8 @@
       }
     }
     .content {
-      &-inner{
-        &-banner{
+      &-inner {
+        &-banner {
           width: 50%;
           align-items: stretch;
         }
@@ -117,15 +122,15 @@
   }
   @media (max-width: 500px) {
     .content {
-      &-inner{
-        &-banner{
+      &-inner {
+        &-banner {
           width: 50%;
           display: none;
         }
       }
     }
-    .container{
-      .login-form-wrapper{
+    .container {
+      .login-form-wrapper {
         padding: 48px 40px 32px;
         width: 100%;
       }
