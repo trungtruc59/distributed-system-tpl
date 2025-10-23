@@ -23,4 +23,8 @@ export default {
   'user.list.role': 'Vai trò',
   'user.list.status': 'Trạng thái',
   'user.list.action': 'Hành động',
+
+  // status
+  'user.list.status.true': 'Kích hoạt',
+  'user.list.status.false': 'Chưa kích hoạt',
 };

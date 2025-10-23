@@ -19,11 +19,11 @@
           style="display: flex; align-items: center; justify-content: end"
         >
           
-          <a-tooltip :content="$t('searchTable.actions.refresh')">
+          <!-- <a-tooltip :content="$t('searchTable.actions.refresh')">
             <div class="action-icon" @click="search"
               ><icon-refresh size="18"
             /></div>
-          </a-tooltip>
+          </a-tooltip> -->
           <a-dropdown @select="handleSelectDensity">
             <a-tooltip :content="$t('searchTable.actions.density')">
               <div class="action-icon"><icon-line-height size="18" /></div>
@@ -91,9 +91,9 @@
           {{ $t(`searchTable.form.filterType.${record.filterType}`) }}
         </template>
         <template #status="{ record }">
-          <span v-if="record.status === 'offline'" class="circle"></span>
+          <span v-if="record.active == false" class="circle"></span>
           <span v-else class="circle pass"></span>
-          {{ $t(`searchTable.form.status.${record.status}`) }}
+          {{ $t(`user.list.status.${record.active}`) }}
         </template>
         <template #operations>
           <a-button v-permission="['admin']" type="text" size="small">
@@ -109,12 +109,13 @@
   import { computed, ref, reactive, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
-  import { queryUserList, User, UserParams } from '@/api/user';
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import cloneDeep from 'lodash/cloneDeep';
   import Sortable from 'sortablejs';
+  import { User } from '@/types/userTypes';
+  import { getUsers, getUsersByAccountId } from '@/api/user';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
@@ -188,7 +189,7 @@
       title: t('user.list.phone'),
       dataIndex: 'phone',
       slotName: 'phone',
-      width: 180,
+      width: 200,
     },
     {
       title: t('user.list.role'),
@@ -197,8 +198,9 @@
     },
     {
       title: t('user.list.status'),
-      dataIndex: 'status',
-      width: 120,
+      dataIndex: 'active',
+      slotName: 'status',
+      width: 180,
     },
     {
       title: t('user.list.action'),
@@ -239,31 +241,29 @@
       value: 'offline',
     },
   ]);
-  const fetchData = async (
-    params: UserParams = { current: 1, pageSize: 20 }
-  ) => {
-    setLoading(true);
-    try {
-      const res = await queryUserList();
-      const data = res.data;
-      renderData.value = data.list;
-      pagination.current = params.current;
-      pagination.total = data.total;
-    } catch (err) {
-      // you can report use errorHandler or other
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchData = async () => {
+  setLoading(true);
+  try {
+    const res = await getUsers();
+    const data = res.data ?? res;
+    renderData.value = Array.isArray(data) ? data : [];
+    pagination.total = res.total ?? data.length;
 
-  const search = () => {
-    fetchData({
-      ...basePagination,
-      ...formModel.value,
-    } as unknown as UserParams);
-  };
+  } catch (err) {
+    console.error('fetchData error:', err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  // const search = () => {
+  //   fetchData({
+  //     ...basePagination,
+  //     ...formModel.value,
+  //   } as unknown as UserParams);
+  // };
   const onPageChange = (current: number) => {
-    fetchData({ ...basePagination, current });
+    fetchData();
   };
 
   fetchData();

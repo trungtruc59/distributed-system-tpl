@@ -12,6 +12,7 @@ export interface RegisterData {
   password: string;
   repassword: string;
   email: string;
+  role: string;
 }
 export interface LoginRes {
   token: string;

@@ -101,7 +101,7 @@ const useUserStore = defineStore('user', {
       try {
         const payload = {
           ...registerForm,
-          role: 'user' // Mặc định vai trò là 'user' khi đăng ký
+          role: '7557a307-2190-40a6-8a2d-56d67a665b6d' // Mặc định vai trò là 'user' khi đăng ký
         };
         const res = await userRegister(payload);
         
