@@ -6,93 +6,93 @@ import * as branchService from '@/api/branch';
 import { Branch, BranchRequest } from '@/types/branchTypes';
 
 export type useBranchStoreProps = {
-  branches: Branch[];
-  total: number;
-  totalPages: number;
-  selectedBranch: Branch | undefined;
-  loading: boolean;
+    branches: Branch[];
+    total: number;
+    totalPages: number;
+    selectedBranch: Branch | undefined;
+    isLoading: boolean;
 };
 
 const useBranchStore = defineStore('branch', {
-  state: (): useBranchStoreProps => ({
-    branches: [],
-    total: 0,
-    totalPages: 1,
-    selectedBranch: undefined,
-    loading: false,
-  }),
+    state: (): useBranchStoreProps => ({
+        branches: [],
+        total: 0,
+        totalPages: 1,
+        selectedBranch: undefined,
+        isLoading: false,
+    }),
 
-  getters: {},
+    getters: {},
 
-  actions: {
-    async getAllBranchWithParams(params?: CommonSearchParams) {
-      try {
-        this.loading = true;
-        const rs = await branchService.getBranches(params);
-        this.loading = false;
-        if (rs && 'data' in rs) {
-          this.branches = rs.data;
-        } else {
-          this.showNotify(rs);
-        }
-      } catch (e) {
-        this.loading = false;
-      }
+    actions: {
+        async getAllBranchWithParams(params?: CommonSearchParams) {
+            try {
+                this.isLoading = true;
+                const rs = await branchService.getBranches(params);
+                this.isLoading = false;
+                if (rs && 'data' in rs) {
+                    this.branches = rs.data;
+                } else {
+                    this.showNotify(rs);
+                }
+            } catch (e) {
+                this.isLoading = false;
+            }
+        },
+
+        async getBranchById(branchId: string) {
+            this.isLoading = true;
+            const rs = await branchService.getBranch(branchId);
+            this.isLoading = false;
+            if (rs && 'data' in rs) {
+                this.selectedBranch = rs.data;
+            } else {
+                this.showNotify(rs);
+            }
+        },
+
+        async createBranch(payload: BranchRequest) {
+            this.isLoading = true;
+            const rs = await branchService.createNewBranch(payload);
+            this.isLoading = false;
+            if (rs && 'data' in rs) {
+                this.getAllBranchWithParams();
+            } else {
+                this.showNotify(rs);
+            }
+        },
+
+        async updateBranch(payload: BranchRequest) {
+            this.isLoading = true;
+            const rs = await branchService.updateBranch(payload);
+            this.isLoading = false;
+            if (rs && 'data' in rs) {
+                this.selectedBranch = rs.data;
+            } else {
+                this.showNotify(rs);
+            }
+        },
+
+        async deleteBranch(branchId: string) {
+            this.isLoading = true;
+            const rs = await branchService.deleteBranch(branchId);
+            this.isLoading = false;
+            if (rs && 'data' in rs) {
+                this.getAllBranchWithParams();
+            } else {
+                this.showNotify(rs);
+            }
+        },
+
+        showNotify(rs: any) {
+            Notification.error({
+                title: 'Error',
+                content: rs.message,
+                closable: true,
+                style: { width: '500px' },
+            });
+        },
     },
-
-    async getBranchById(branchId: string) {
-      this.loading = true;
-      const rs = await branchService.getBranch(branchId);
-      this.loading = false;
-      if (rs && 'data' in rs) {
-        this.selectedBranch = rs.data;
-      } else {
-        this.showNotify(rs);
-      }
-    },
-
-    async createBranch(payload: BranchRequest) {
-      this.loading = true;
-      const rs = await branchService.createNewBranch(payload);
-      this.loading = false;
-      if (rs && 'data' in rs) {
-        this.getAllBranchWithParams();
-      } else {
-        this.showNotify(rs);
-      }
-    },
-
-    async updateBranch(payload: BranchRequest) {
-      this.loading = true;
-      const rs = await branchService.updateBranch(payload);
-      this.loading = false;
-      if (rs && 'data' in rs) {
-        this.selectedBranch = rs.data;
-      } else {
-        this.showNotify(rs);
-      }
-    },
-
-    async deleteBranch(branchId: string) {
-      this.loading = true;
-      const rs = await branchService.deleteBranch(branchId);
-      this.loading = false;
-      if (rs && 'data' in rs) {
-        this.getAllBranchWithParams();
-      } else {
-        this.showNotify(rs);
-      }
-    },
-
-    showNotify(rs: any) {
-      Notification.error({
-        title: 'Error',
-        content: rs.message,
-        closable: true,
-        style: { width: '500px' },
-      });
-    },
-  },
 });
 
 export default useBranchStore;
