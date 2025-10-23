@@ -4,23 +4,18 @@ import { CommonAPIErrorResponse, CommonAPIResponse, CommonSearchParams } from '@
 import http from './http';
 
 export interface UserParams {
-  current: number;
-  pageSize: number;
+    current: number;
+    pageSize: number;
 }
 
 export const getUsers = (params?: CommonSearchParams) => {
-  return http.get<CommonAPIResponse<User[]> | CommonAPIErrorResponse>(
-    'api/account',
-    params
-  );
+    return http.get<CommonAPIResponse<User[]>>('api/account', params);
 };
 export const getUsersByAccountId = (accountId: string) => {
-  return http.get<CommonAPIResponse<User[]> | CommonAPIErrorResponse>(
-    `api/user/${accountId}`
-  );
+    return http.get<CommonAPIResponse<User[]>>(`api/user/${accountId}`);
 };
 
 export interface PolicyListRes {
-  list: User[];
-  total: number;
+    list: User[];
+    total: number;
 }
