@@ -1,13 +1,13 @@
 <template>
     <a-layout class="user-public--page-layout">
         <PublicHeader />
-        <a-layout-content class="user-public--content">
-            <a-spin :loading="branchStore.isLoading === true" dot>
-                <div v-if="branchStore.isLoading" style="width: 100vw"></div>
-                <BranchCard v-for="b in branches" :key="b.id" :branch="b" />
+        <a-layout-content :class="branchStore.isLoading ? ' user-public--page-loading' : 'user-public--content'">
+            <a-spin v-if="branchStore.isLoading" :loading="true" dot>
+                <div style="width: 100vw; height: 30vh; margin: auto"></div>
             </a-spin>
+            <BranchCard v-for="b in branches" :key="b.id" :branch="b" />
         </a-layout-content>
-        <a-layout-footer class="user-public--footer">Footer</a-layout-footer>
+        <!-- <a-layout-footer class="user-public--footer">Footer</a-layout-footer> -->
     </a-layout>
 </template>
 
@@ -31,12 +31,21 @@
     .user-public--page-layout {
         display: flex;
         flex-direction: column;
-        height: 100dvh;
+    }
+
+    .user-public--page-loading {
+        display: flex;
+        justify-content: center;
+        height: 20vh;
     }
 
     .user-public--content {
         display: flex;
-        flex: 1;
         padding: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: flex-start;
+        max-width: calc(470px * 3 + 4rem); /* 470px là chiều rộng của BranchCard */
+        margin: auto;
     }
 </style>

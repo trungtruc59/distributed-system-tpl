@@ -1,7 +1,7 @@
 <template>
     <a-card class="branch-information--card" :body-style="{ padding: 0 }">
         <div class="relative">
-            <a-image :src="branch.thumbnail" :alt="branch.name" fit="cover" class="branch-information--image" />
+            <a-image :src="branch.thumbnail" :alt="branch.name" :preview="false" fit="cover" class="branch-information--image" />
             <div class="rating-tag"> <i class="bx bxs-star"></i> 0 </div>
         </div>
 
@@ -10,7 +10,6 @@
                 <img :src="branch.logo" class="branch-information--logo" style="width: 60px; height: auto" />
                 <div>
                     <div class="branch-information--title">
-                        <icon-check-circle-fill class="text-blue-500 mr-1" />
                         {{ branch.name }}
                     </div>
                     <div class="branch-information--address-group">
@@ -34,7 +33,6 @@
 </template>
 
 <script setup lang="ts">
-    import { IconCheckCircleFill } from '@arco-design/web-vue/es/icon';
     import { Branch } from '@/types/branchTypes';
     import { toRefs } from 'vue';
     import { formatOpenAndCloseTimeOfBranch } from '@/utils/timeUtils';
