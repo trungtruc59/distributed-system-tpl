@@ -67,7 +67,7 @@ axios.interceptors.response.use(
     (error) => {
         Notification.error({
             title: 'Thao tác không thành công',
-            content: error.message,
+            content: error?.response?.data?.message || error.message,
             closable: true,
             style: { width: '350px' },
             duration: 5 * 1000,
