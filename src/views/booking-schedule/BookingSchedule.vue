@@ -1,12 +1,40 @@
 <template>
-    <div class="p-8">
-        <TimeGrid start="2025-01-01T06:00:00" end="2025-01-01T22:00:00" :time-scale="30" :items="items" :clear-line="false" @change="handleChange" />
-    </div>
+    <a-layout>
+        <PublicHeader />
+        <a-layout-content v-if="branch?.id">
+            <a-page-header :style="{ background: 'var(--color-bg-2)' }" class="border-b border-gray-200" @back="handleBackToHomePage">
+                <template #title>
+                    <div class="flex gap-4 items-center border-b-px">
+                        <img :src="branch?.logo" class="rounded-full" style="width: 45px; height: auto" />
+                        {{ branch?.name }}
+                    </div>
+                </template>
+            </a-page-header>
+            <div class="p-8">
+                <TimeGrid :start="branch.openTime" :end="branch.closeTime" :time-scale="30" :items="items" :clear-line="false" @change="handleChange" />
+            </div>
+        </a-layout-content>
+        <a-result v-if="!branch?.id" status="404" subtitle="Whoops, that page is gone.">
+            <template #extra>
+                <a-space>
+                    <a-button type="primary" @click="handleBackToHomePage">Back</a-button>
+                </a-space>
+            </template>
+        </a-result>
+    </a-layout>
 </template>
 
 <script setup>
     import { ref } from 'vue';
     import TimeGrid from '@/components/time-grid/TimeGrid.vue';
+    import PublicHeader from '@/views/user-public-page/components/public-page-header/index.vue';
+
+    import useBranchStore from '@/store/modules/branches';
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter();
+
+    const { selectedBranch: branch, setSelectedBranch } = useBranchStore();
 
     const items = ref([
         {
@@ -53,6 +81,10 @@
         },
     ]);
 
+    const handleBackToHomePage = () => {
+        setSelectedBranch({});
+        router.push({ name: 'home' });
+    };
     const handleChange = (newItems) => {
         console.log('Items changed:', newItems);
         items.value = newItems;

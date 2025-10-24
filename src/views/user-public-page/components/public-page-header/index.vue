@@ -1,11 +1,18 @@
 <template>
-    <a-layout-header class="user-public--header">
+    <a-layout-header class="user-public--header shadow-lg">
         <div class="header-left">
             <img src="http://res.cloudinary.com/dnrxsjo5r/image/upload/v1761142948/btn-logo.png.png" alt="Logo" class="logo" />
         </div>
 
         <div class="header-search-box">
-            <a-input-search placeholder="Tìm sân..." />
+            <a-button-group v-if="route.name === 'home'">
+                <a-input placeholder="Tìm sân..." @press-enter="handleSearchBranch" />
+                <a-button shape="circle">
+                    <template #icon>
+                        <icon-search />
+                    </template>
+                </a-button>
+            </a-button-group>
         </div>
 
         <div class="header-right">
@@ -18,15 +25,24 @@
 </template>
 
 <script setup lang="ts">
-    import { useRouter } from 'vue-router';
+    import { useRouter, useRoute } from 'vue-router';
+    import { IconSearch } from '@arco-design/web-vue/es/icon';
+    import useBranchStore from '@/store/modules/branches';
 
+    const { getAllBranchWithParams } = useBranchStore();
     const router = useRouter();
+    const route = useRoute();
     const handleRedirectToLoginPage = () => {
         router.push({ name: 'login' });
     };
 
     const handleRedirectToRegisterPage = () => {
         router.push({ name: 'register' });
+    };
+
+    const handleSearchBranch = (evt: KeyboardEvent) => {
+        const { value } = evt.target;
+        getAllBranchWithParams({ searchKey: value });
     };
 </script>
 
@@ -38,7 +54,7 @@
         height: 64px;
         background: #fff;
         padding: 0 32px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1rem;
     }
 
     .header-left {
@@ -69,10 +85,15 @@
         justify-content: flex-end;
     }
 
-    .header-search-box .arco-input-search {
-        width: 40%;
+    .header-search-box .arco-btn-group {
+        width: 30%;
         height: 32px;
+    }
+
+    .header-search-box .arco-input-wrapper {
         border-radius: 32px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
     }
 
     :deep(.arco-menu) {

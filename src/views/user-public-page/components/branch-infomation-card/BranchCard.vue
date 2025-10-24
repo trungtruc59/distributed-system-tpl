@@ -24,7 +24,7 @@
                                 <a-link><i class="bx bx-phone"></i> &nbsp; liên hệ </a-link>
                             </div>
                         </div>
-                        <a-button type="primary" size="mini" shape="round" class="booking-btn" @click="router.push({ name: 'schedule' })"> ĐẶT LỊCH </a-button>
+                        <a-button type="primary" size="mini" shape="round" class="booking-btn" @click="handleClickSchedule"> ĐẶT LỊCH </a-button>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,9 @@
     import { toRefs } from 'vue';
     import { formatOpenAndCloseTimeOfBranch } from '@/utils/timeUtils';
     import { useRouter } from 'vue-router';
+    import useBranchStore from '@/store/modules/branches';
 
+    const { setSelectedBranch } = useBranchStore();
     const router = useRouter();
 
     const props = withDefaults(
@@ -61,6 +63,11 @@
     );
 
     const { branch } = toRefs(props);
+
+    const handleClickSchedule = () => {
+        setSelectedBranch(branch.value);
+        router.push({ name: 'schedule' });
+    };
 </script>
 
 <style scoped>

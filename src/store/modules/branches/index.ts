@@ -84,6 +84,19 @@ const useBranchStore = defineStore('branch', {
             }
         },
 
+        async getBookedCourt(branchId: string, day: number) {
+            const rs = await branchService.getBookedCourtOfBranch(branchId, { day });
+            if (rs && 'data' in rs) {
+                // this.branches = rs.data;
+            } else {
+                this.showNotify(rs);
+            }
+        },
+
+        setSelectedBranch(branch: Branch) {
+            this.selectedBranch = branch;
+        },
+
         showNotify(rs: any) {
             Notification.error({
                 title: 'Error',
