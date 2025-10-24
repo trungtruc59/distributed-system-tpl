@@ -1,22 +1,22 @@
 const publicRoutes = [
-  {
-    path: '/',
-    component: () => import('@/layout/public-layout.vue'),
-    children: [
-      {
-        path: '',
-        name: 'home',
-        component: () => import('@/views/user-public-page/index.vue'),
-        meta: { requiresAuth: false },
-      },
-      {
-        path: 'about',
-        name: 'about',
-        component: () => import('@/views/template/about.vue'),
-        meta: { requiresAuth: false },
-      },
-    ],
-  },
+    {
+        path: '/',
+        component: () => import('@/layout/public-layout.vue'),
+        children: [
+            {
+                path: '',
+                name: 'home',
+                component: () => import('@/views/user-public-page/index.vue'),
+                meta: { requiresAuth: false },
+            },
+            {
+                path: 'schedule',
+                name: 'schedule',
+                component: () => import('@/views/booking-schedule/BookingSchedule.vue'),
+                meta: { requiresAuth: false },
+            },
+        ],
+    },
 ];
 
 export default publicRoutes;

@@ -24,7 +24,7 @@
                                 <a-link><i class="bx bx-phone"></i> &nbsp; liên hệ </a-link>
                             </div>
                         </div>
-                        <a-button type="primary" size="mini" shape="round" class="booking-btn"> ĐẶT LỊCH </a-button>
+                        <a-button type="primary" size="mini" shape="round" class="booking-btn" @click="router.push({ name: 'schedule' })"> ĐẶT LỊCH </a-button>
                     </div>
                 </div>
             </div>
@@ -36,6 +36,9 @@
     import { Branch } from '@/types/branchTypes';
     import { toRefs } from 'vue';
     import { formatOpenAndCloseTimeOfBranch } from '@/utils/timeUtils';
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter();
 
     const props = withDefaults(
         defineProps<{
