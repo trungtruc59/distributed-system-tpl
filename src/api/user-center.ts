@@ -41,11 +41,13 @@ export function saveUserInfo() {
 
 export interface BasicInfoModel {
   email: string;
-  nickname: string;
-  countryRegion: string;
-  area: string;
-  address: string;
-  profile: string;
+  full_name: string;
+  phone: string;
+  password: string;
+  birthday: string;
+  avatar: string;
+  gender: string;
+  role: string;
 }
 
 export interface EnterpriseCertificationModel {

@@ -1,12 +1,12 @@
 <template>
     <div class="container">
-        <Breadcrumb :items="['menu.user', 'menu.user.list']" />
+        <Breadcrumb :routes="breadcrumbRoutes" />
         <a-card class="general-card" :title="$t('menu.user.list')">
             <a-divider style="margin-top: 0" />
             <a-row style="margin-bottom: 16px">
                 <a-col :span="12">
                     <a-space>
-                        <a-button type="primary">
+                        <a-button type="primary" @click="router.push({ name: 'UserAdd' })">
                             <template #icon>
                                 <icon-plus />
                             </template>
@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, ref, reactive, watch, nextTick, onMounted } from 'vue';
+    import { computed, ref, watch, nextTick, onMounted } from 'vue';
     import { useI18n } from 'vue-i18n';
     import useLoading from '@/hooks/loading';
     import { Pagination } from '@/types/global';
@@ -81,9 +81,14 @@
     import { User } from '@/types/userTypes';
     import { getUsers, deleteAccount } from '@/api/user';
     import { useRouter } from 'vue-router';
+    import Breadcrumb from '@/components/breadcrumb/index.vue';
 
     const router = useRouter();
 
+    const breadcrumbRoutes = [
+        { path: '/dashboard', label: 'Trang chủ' },
+        { path: '/user/list', label: 'Danh sách người dùng' },
+    ]
     type SizeProps = 'mini' | 'small' | 'medium' | 'large';
     type Column = TableColumnData & { checked?: true };
     const rowSelection = ref({
@@ -104,7 +109,6 @@
     const { loading, setLoading } = useLoading(true);
     const { t } = useI18n();
     const renderData = ref<User[]>([]);
-    const formModel = ref(generateFormModel());
     const cloneColumns = ref<Column[]>([]);
     const showColumns = ref<Column[]>([]);
 
@@ -136,11 +140,11 @@
             title: t('user.list.index'),
             dataIndex: 'index',
             slotName: 'index',
-            width: 70,
+            width: 50,
         },
         {
             title: t('user.list.fullname'),
-            dataIndex: 'fullname',
+            dataIndex: 'userInfo.full_name',
             width: 220,
         },
         {
@@ -152,7 +156,7 @@
             title: t('user.list.phone'),
             dataIndex: 'phone',
             slotName: 'phone',
-            width: 180,
+            width: 150,
         },
         {
             title: t('user.list.role'),

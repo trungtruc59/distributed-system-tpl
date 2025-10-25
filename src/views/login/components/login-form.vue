@@ -111,7 +111,7 @@
     password: '', // demo default value
   });
   const userInfo = ref({
-    phone: '0967591602',
+    phone: '0967591600',
     password: 'Tr@1234',
   });
 

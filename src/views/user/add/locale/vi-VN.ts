@@ -1,5 +1,5 @@
 export default {
-  'menu.user.info': 'Thông tin người dùng',
+  'menu.user.add': 'Thêm tài khoản',
   'userInfo.editUserInfo': 'Chỉnh sửa thông tin',
   'userInfo.tab.title.overview': 'Tổng quan',
   'userInfo.tab.title.project': 'Dự án',

@@ -1,35 +1,33 @@
 <template>
-  <a-breadcrumb class="container-breadcrumb">
-    <a-breadcrumb-item>
-      <icon-apps />
-    </a-breadcrumb-item>
-    <a-breadcrumb-item v-for="item in items" :key="item">
-      {{ $t(item) }}
-    </a-breadcrumb-item>
+  <a-breadcrumb class="container-breadcrumb" :routes="routes">
+    <template #item-render="{ route }">
+      <router-link :to="route.path">
+        {{ route.label }}
+      </router-link>
+    </template>
   </a-breadcrumb>
 </template>
 
 <script lang="ts" setup>
-  import { PropType } from 'vue';
+import { PropType } from 'vue'
 
-  defineProps({
-    items: {
-      type: Array as PropType<string[]>,
-      default() {
-        return [];
-      },
-    },
-  });
+// Định nghĩa props truyền vào
+defineProps({
+  routes: {
+    type: Array as PropType<{ path: string; label: string }[]>,
+    default: () => [],
+  },
+})
 </script>
 
 <style scoped lang="less">
-  .container-breadcrumb {
-    margin: 16px 0;
-    :deep(.arco-breadcrumb-item) {
-      color: rgb(var(--gray-6));
-      &:last-child {
-        color: rgb(var(--gray-8));
-      }
+.container-breadcrumb {
+  margin: 16px 0;
+  :deep(.arco-breadcrumb-item) {
+    color: rgb(var(--gray-6));
+    &:last-child {
+      color: rgb(var(--gray-8));
     }
   }
+}
 </style>

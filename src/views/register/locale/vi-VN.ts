@@ -16,6 +16,7 @@ export default {
   'register.form.rememberPassword': 'Ghi nhớ mật khẩu',
   'register.form.forgetPassword': 'Quên mật khẩu',
   'register.form.register': 'Đăng ký tài khoản',
+  'register.form.success': 'Đăng ký thành công',
   'register.form.login': 'Đăng nhập',
   'register.banner.slogan1': 'Mẫu giao diện chất lượng cao, dùng ngay',
   'register.banner.subSlogan1':
