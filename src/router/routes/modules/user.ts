@@ -23,6 +23,17 @@ const USER: AppRouteRecordRaw = {
       },
     },
     {
+      path: 'edit',
+      name: 'UserEdit',
+      component: () => import('@/views/user/edit/index.vue'),
+      meta: {
+        locale: 'menu.user.edit',
+        hideInMenu: true,
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
+    {
       path: 'info',
       name: 'Info',
       component: () => import('@/views/user/info/index.vue'),
