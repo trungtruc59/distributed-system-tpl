@@ -3,7 +3,11 @@ import { CommonSearchParams } from '@/types/CommonTypes';
 import { defineStore } from 'pinia';
 
 import * as branchService from '@/api/branch';
+import * as courtService from '@/api/court';
 import { Branch, BranchRequest } from '@/types/branchTypes';
+import dayjs from 'dayjs';
+import { Price } from '@/types/itemTypes';
+import { DayNumberToEnum } from './dayMapping.constant';
 
 export type useBranchStoreProps = {
     branches: Branch[];
@@ -11,6 +15,7 @@ export type useBranchStoreProps = {
     totalPages: number;
     selectedBranch: Branch | undefined;
     isLoading: boolean;
+    courts: any[];
 };
 
 const useBranchStore = defineStore('branch', {
@@ -20,6 +25,7 @@ const useBranchStore = defineStore('branch', {
         totalPages: 1,
         selectedBranch: undefined,
         isLoading: false,
+        courts: [],
     }),
 
     getters: {},
@@ -87,10 +93,29 @@ const useBranchStore = defineStore('branch', {
         async getBookedCourt(branchId: string, day: number) {
             const rs = await branchService.getBookedCourtOfBranch(branchId, { day });
             if (rs && 'data' in rs) {
-                // this.branches = rs.data;
+                return rs.data;
+            }
+            this.showNotify(rs);
+            return [];
+        },
+
+        async getAllCourtOfBranch(branchId: string) {
+            const rs = await courtService.getCourtOfBranch(branchId);
+            if (rs && 'data' in rs) {
+                console.log({ rs });
+
+                this.courts = rs.data;
             } else {
                 this.showNotify(rs);
             }
+        },
+
+        getPriceOfCourt(courtName: string, selectedDay: string) {
+            const dayNumber = dayjs(selectedDay).day();
+            const dayString = DayNumberToEnum[dayNumber];
+
+            const selectedCourt = this.courts.find((c) => c.name === courtName);
+            return selectedCourt.prices.filter((price: Price) => price.dayOfWeek === dayString);
         },
 
         setSelectedBranch(branch: Branch) {

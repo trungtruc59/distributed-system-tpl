@@ -21,7 +21,7 @@
 
             <!-- Grid -->
             <div ref="gridRef">
-                <div v-for="(item, rowIndex) in localItems" :key="rowIndex" class="flex border-b border-gray-200">
+                <div v-for="(item, rowIndex) in displayItems" :key="rowIndex" class="flex border-b border-gray-200">
                     <div class="w-12 flex-shrink-0 flex items-center justify-center text-sm font-medium bg-gray-50 border-r border-gray-300">
                         {{ item.name }}
                     </div>
@@ -68,9 +68,17 @@
             type: Array,
             default: () => [],
         },
+        labels: {
+            type: Array,
+            default: () => [],
+        },
         clearLine: {
             type: Boolean,
             default: false,
+        },
+        selectColor: {
+            type: String,
+            default: '#ff6666',
         },
     });
 
@@ -82,6 +90,17 @@
     const dragEnd = ref(null);
     const currentRow = ref(null);
     const gridRef = ref(null);
+
+    const displayItems = computed(() => {
+        if (props.labels.length === 0) {
+            return localItems.value;
+        }
+
+        return props.labels.map((label) => {
+            const existingItem = localItems.value.find((item) => item.name === label);
+            return existingItem || { name: label, periods: [] };
+        });
+    });
 
     watch(
         () => props.items,
@@ -131,7 +150,7 @@
     };
 
     const getPeriodAtSlot = (rowIndex, slotIndex) => {
-        const item = localItems.value[rowIndex];
+        const item = displayItems.value[rowIndex];
         if (!item || !item.periods) return null;
 
         return item.periods.find((period) => {
@@ -163,9 +182,9 @@
         const period = getPeriodAtSlot(rowIndex, slotIndex);
         if (period) {
             if (period.disabled) {
-                return period.color ? `${period.color}80` : '#ff666680';
+                return period.color ? `${period.color}80` : `${props.selectColor}80`;
             }
-            return period.color || '#ff6666';
+            return period.color || props.selectColor;
         }
 
         return undefined;
@@ -192,8 +211,20 @@
             const startIdx = Math.min(dragStart.value, dragEnd.value);
             const endIdx = Math.max(dragStart.value, dragEnd.value) + 1;
 
+            const currentItem = displayItems.value[currentRow.value];
+            const itemName = currentItem.name;
+
             const newItems = [...localItems.value];
-            const item = { ...newItems[currentRow.value] };
+            let itemIndex = newItems.findIndex((item) => item.name === itemName);
+
+            let item;
+            if (itemIndex === -1) {
+                item = { name: itemName, periods: [] };
+                newItems.push(item);
+                itemIndex = newItems.length - 1;
+            } else {
+                item = { ...newItems[itemIndex] };
+            }
 
             if (!item.periods) {
                 item.periods = [];
@@ -214,7 +245,7 @@
                 return;
             }
 
-            const isRemoving = localItems.value[currentRow.value].periods?.some((period) => {
+            const isRemoving = displayItems.value[currentRow.value].periods?.some((period) => {
                 if (period.disabled) return false;
 
                 const pStart = getSlotIndex(period.start);
@@ -234,7 +265,7 @@
                 } else {
                     const newPeriods = [];
 
-                    localItems.value[currentRow.value].periods.forEach((period) => {
+                    displayItems.value[currentRow.value].periods.forEach((period) => {
                         if (period.disabled) {
                             newPeriods.push(period);
                             return;
@@ -285,7 +316,7 @@
                 item.periods.push({
                     start: startTime,
                     end: endTime,
-                    color: '#ff6666',
+                    color: props.selectColor,
                 });
 
                 item.periods.sort((a, b) => getSlotIndex(a.start) - getSlotIndex(b.start));
@@ -312,7 +343,7 @@
                 item.periods = merged;
             }
 
-            newItems[currentRow.value] = item;
+            newItems[itemIndex] = item;
             localItems.value = newItems;
             emit('change', newItems);
         }
