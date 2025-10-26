@@ -44,26 +44,53 @@
                 
                 
                 <template #status="{ record }">
-                    <span v-if="record.active == false" class="circle"></span>
-                    <span v-else class="circle pass"></span>
-                    {{ $t(`user.list.status.${record.active}`) }}
+                    <a-popconfirm v-if="record.active == false" content="Kích hoạt tài khoản này?" type="info" @ok="handleActive(record.id)">
+                        <a-tag size="large" color="red" class="dont-active" >
+                            <template #icon>
+                                <icon-info-circle />
+                            </template>
+                           {{ $t(`user.list.status.${record.active}`) }}
+                        </a-tag>
+                    </a-popconfirm>
+                    <a-tag size="large" v-else color="green" >
+                        <template #icon>
+                            <icon-check-circle />
+                        </template>
+                        {{ $t(`user.list.status.${record.active}`) }}
+                    </a-tag>
                 </template>
 
                 <template #operations="{ record }">
                     <a-space>
-                      <a-tooltip :content="'Chỉnh sửa'">
+                      <a-tooltip :content="'Cập nhật'">
                         <a-button type="text" status="normal" @click="handleEdit(record.id)">
                           <icon-edit />
                         </a-button>
                       </a-tooltip>
                     </a-space>
-                    <a-popconfirm content="Are you sure you want to delete?" type="warning" @ok="handleDelete(record.id)">
+                    <a-popconfirm content="Bạn có chắc chắn muốn xoá tài khoản này?" type="warning" @ok="handleDelete(record.id)">
                       <a-tooltip :content="'Xoá'">
                         <a-button type="text" status="danger">
                           <icon-delete />
                         </a-button>
                       </a-tooltip>
                     </a-popconfirm>
+                    <a-button @click="handleClick">
+                        Cập nhật Role
+                    </a-button>
+                    <a-modal v-model:visible="visible" title="Cập nhật Role" @cancel="handleCancel" @before-ok="(done) => handleBeforeOk(record.id, done)" :loading="loading">
+                        <a-form label-align="left" :model="formUpdateRole">
+                            <a-form-item field="role" label="Phần quyền" :label-col-props="{ span: 16 }" :wrapper-col-props="{ span: 24 }">
+                            <a-cascader
+                                v-model="formUpdateRole.role"
+                                placeholder="Chọn phần quyền"
+                                style="width: 100%;"
+                                :options="options"
+                                allow-clear
+                            />
+                        </a-form-item>
+                        </a-form>
+                    </a-modal>
                 </template>
             </a-table>
         </a-card>
@@ -75,11 +102,10 @@
     import { useI18n } from 'vue-i18n';
     import useLoading from '@/hooks/loading';
     import { Pagination } from '@/types/global';
-    import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
     import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
     import cloneDeep from 'lodash/cloneDeep';
     import { User } from '@/types/userTypes';
-    import { getUsers, deleteAccount } from '@/api/user';
+    import { getUsers, deleteAccount, activeAccount, updateRole, getRoles } from '@/api/user';
     import { useRouter } from 'vue-router';
     import Breadcrumb from '@/components/breadcrumb/index.vue';
 
@@ -106,6 +132,10 @@
             status: '',
         };
     };
+    const options = ref<{ label: string; value: string }[]>([]);
+    const formUpdateRole = ref({
+      role: ''
+    });
     const { loading, setLoading } = useLoading(true);
     const { t } = useI18n();
     const renderData = ref<User[]>([]);
@@ -161,13 +191,13 @@
         {
             title: t('user.list.role'),
             dataIndex: 'role',
-            width: 120,
+            width: 150,
         },
         {
             title: t('user.list.status'),
             dataIndex: 'active',
             slotName: 'status',
-            width: 150,
+            width: 170,
         },
         {
             title: t('user.list.action'),
@@ -175,40 +205,20 @@
             slotName: 'operations',
         },
     ]);
-    const contentTypeOptions = computed<SelectOptionData[]>(() => [
-        {
-            label: t('searchTable.form.contentType.img'),
-            value: 'img',
-        },
-        {
-            label: t('searchTable.form.contentType.horizontalVideo'),
-            value: 'horizontalVideo',
-        },
-        {
-            label: t('searchTable.form.contentType.verticalVideo'),
-            value: 'verticalVideo',
-        },
-    ]);
-    const filterTypeOptions = computed<SelectOptionData[]>(() => [
-        {
-            label: t('searchTable.form.filterType.artificial'),
-            value: 'artificial',
-        },
-        {
-            label: t('searchTable.form.filterType.rules'),
-            value: 'rules',
-        },
-    ]);
-    const statusOptions = computed<SelectOptionData[]>(() => [
-        {
-            label: t('searchTable.form.status.online'),
-            value: 'online',
-        },
-        {
-            label: t('searchTable.form.status.offline'),
-            value: 'offline',
-        },
-    ]);
+    const cloneRoles = async () => {
+        setLoading(true);
+        try {
+            const res = await getRoles();
+            const data = 'data' in res ? res.data : res;
+            options.value = Array.isArray(data) ? data.map((role: any) => ({ label: role.title, value: role.id })) : [];
+            
+        } catch (err) {
+            console.error('fetchData error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+    cloneRoles();
     const fetchData = async (
     page = 0, size = 10
     ) => {
@@ -260,7 +270,49 @@
             setLoading(false);
         }
     };
+    const handleActive = async (id: string) => {
+        setLoading(true);
+        try {
+            await activeAccount(id, 'active')
+            fetchData(
+                pagination.value.current - 1,
+                pagination.value.pageSize
+            );
+        } catch (err) {
+            console.error('activate error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+    const visible = ref(false);
+    const handleClick = () => {
+      visible.value = true;
+    };
 
+    const handleBeforeOk = async (accountId: string, done: (closed: boolean) => void) => {
+
+        loading.value = true;
+        try {
+            const { role } = formUpdateRole.value
+            const res = await updateRole(accountId, role);
+            window.setTimeout(() => {
+            visible.value = false
+            done(true)
+            fetchData(
+                pagination.value.current - 1,
+                pagination.value.pageSize
+            );
+            }, 500)
+        } catch (err) {
+            console.error('Update role failed:', err)
+        } finally {
+            
+            loading.value = false
+        }
+    };
+    const handleCancel = () => {
+      visible.value = false;
+    }
     watch(
         () => columns.value,
         (val) => {
@@ -307,5 +359,8 @@
             margin-left: 12px;
             cursor: pointer;
         }
+    }
+    .dont-active {
+        cursor: pointer;
     }
 </style>

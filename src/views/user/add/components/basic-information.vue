@@ -82,13 +82,13 @@
                 <a-form-item>
                     <a-space>
                         <a-button v-if="props.userDetail?.id" type="primary" @click="update({ errors: formRef.value?.getFieldsError(), values: formData })"> 
-                            Sửa thông tin
+                            Cập nhật thông tin
                         </a-button>
                         <a-button v-else type="primary" @click="validate({ errors: formRef.value?.getFieldsError(), values: formData })">
                             Tạo tài khoản
                         </a-button>
-                        <a-button type="secondary" @click="reset">
-                            {{ $t('userSetting.reset') }}
+                        <a-button type="secondary" @click="cancelUpdate">
+                            Huỷ bỏ
                         </a-button>
                     </a-space>
                 </a-form-item>
@@ -168,6 +168,12 @@
             try {
                 await updateUser(props.id ? props.id : '', values);
                 Message.success('Cập nhật tài khoản thành công');
+                router.push({
+                    name: 'List',
+                    query: {
+                        ...othersQuery,
+                    },
+                });
             } catch (err) {
                 console.log(err);
                 errorMessage.value = (err as Error).message;
@@ -186,8 +192,13 @@
             },
         ];
     }
-    const reset = async () => {
-        await formRef.value?.resetFields();
+    const cancelUpdate = async () => {
+        router.push({
+            name: 'List',
+            query: {
+                ...othersQuery,
+            },
+        });
     };
     watch(
     () => props.userDetail,

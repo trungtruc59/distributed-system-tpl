@@ -35,8 +35,6 @@
           // lọc user theo id
           const foundUser = Array.isArray(data) ? data.find((item: any) => String(item.id) === String(id)) : null;
           userDetail.value = foundUser || null;
-
-          console.log('User detail:', userDetail.value);
             
         } catch (err) {
             console.error('fetchData error:', err);

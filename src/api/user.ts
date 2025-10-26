@@ -7,6 +7,10 @@ export interface UserParams {
     current: number;
     pageSize: number;
 }
+export interface RoleRes {
+    id: string;
+    title: string;
+}
 export interface PolicyListRes {
     data: User[];
     totalPages: number;
@@ -19,6 +23,11 @@ export const getUsers = (params?: CommonSearchParams) => {
 export const getUsersByAccountId = (accountId: string) => {
     return http.get<CommonAPIResponse<User[]>>(`api/user/${accountId}`);
 };
+
+export const getRoles = () => {
+    return http.get<CommonAPIResponse<RoleRes[]>>('api/role');
+};
+
 export const addAccount = (data: Partial<User>) => {
     return http.post<CommonAPIResponse<User>>('api/auth/register', data);
 };
@@ -31,6 +40,12 @@ export const updateUser = (id: string, data: Partial<User>) => {
 export const deleteAccount = (id: string) => {
     return http.delete<CommonAPIResponse<void>>(`api/account/${id}`);
 };
+export const activeAccount = (accountId: string, type: 'active') => {
+    return http.post<CommonAPIResponse<void>>('api/auth/verify', { accountId, type });
+};
+export const updateRole = (accountId: string, role: string) => {
+    return http.put<CommonAPIResponse<void>>(`api/account/${accountId}`, { role });
+}
 export const deleteUser = (id: string) => {
     return http.delete<CommonAPIResponse<void>>(`api/user/${id}`);
 };
