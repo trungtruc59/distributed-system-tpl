@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="wrap-main">
     <Breadcrumb :routes="breadcrumbRoutes" />
     <a-card class="general-card" :title="'Thêm tài khoản mới'">
       <a-row class="wrapper">
@@ -30,12 +30,12 @@
 </script>
 
 <style scoped lang="less">
-  .container {
+  .wrap-main {
     padding: 0 20px 20px 20px;
   }
 
   .wrapper {
-    padding: 20px 0 0 20px;
+    padding: 20px 20px;
     min-height: 580px;
     background-color: var(--color-bg-2);
     border-radius: 4px;

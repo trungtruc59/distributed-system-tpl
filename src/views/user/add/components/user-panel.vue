@@ -1,23 +1,16 @@
 <template>
   <a-card :bordered="false">
     <a-space :size="54">
-      <a-upload
-        :custom-request="customRequest"
-        list-type="picture-card"
-        :file-list="fileList"
-        :show-upload-button="true"
-        :show-file-list="false"
-        @change="uploadChange"
-      >
-        <template #upload-button>
-          <a-avatar :size="100" class="info-avatar">
-            <template #trigger-icon>
-              <icon-camera />
-            </template>
-            <img v-if="fileList.length" :src="fileList[0].url" />
-          </a-avatar>
-        </template>
-      </a-upload>
+      <template>
+        <a-image
+          width="200"
+          v-if="fileList.length" :src="fileList[0].url"
+        />
+        <a-image
+          width="200"
+          v-else src="@/assets/user.png"
+        />
+      </template>
       <a-descriptions
         :data="renderData"
         :column="2"
@@ -38,10 +31,10 @@
         <template #value="{ value, data }">
           <a-tag
             v-if="data.label === 'userSetting.label.certification'"
-            color="green"
+            color="red"
             size="small"
           >
-            已认证
+            Chưa kích hoạt
           </a-tag>
           <span v-else>{{ value }}</span>
         </template>
@@ -61,11 +54,7 @@
   import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
 
   const userStore = useUserStore();
-  const file = {
-    uid: '-2',
-    name: 'avatar.png',
-    url: userStore.avatar,
-  };
+ 
   const renderData = [
     {
       label: 'userSetting.label.name',
@@ -88,52 +77,8 @@
       value: userStore.registrationDate,
     },
   ] as DescData[];
-  const fileList = ref<FileItem[]>([file]);
-  const uploadChange = (fileItemList: FileItem[], fileItem: FileItem) => {
-    fileList.value = [fileItem];
-  };
-  const customRequest = (options: RequestOption) => {
-    // docs: https://axios-http.com/docs/cancellation
-    const controller = new AbortController();
-
-    (async function requestWrap() {
-      const {
-        onProgress,
-        onError,
-        onSuccess,
-        fileItem,
-        name = 'file',
-      } = options;
-      onProgress(20);
-      const formData = new FormData();
-      formData.append(name as string, fileItem.file as Blob);
-      const onUploadProgress = (event: ProgressEvent) => {
-        let percent;
-        if (event.total > 0) {
-          percent = (event.loaded / event.total) * 100;
-        }
-        onProgress(parseInt(String(percent), 10), event);
-      };
-
-      try {
-        // https://github.com/axios/axios/issues/1630
-        // https://github.com/nuysoft/Mock/issues/127
-
-        const res = await userUploadApi(formData, {
-          controller,
-          onUploadProgress,
-        });
-        onSuccess(res);
-      } catch (error) {
-        onError(error);
-      }
-    })();
-    return {
-      abort() {
-        controller.abort();
-      },
-    };
-  };
+  const fileList = ref<FileItem[]>([]);
+  
 </script>
 
 <style scoped lang="less">

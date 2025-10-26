@@ -2,11 +2,8 @@
   <div class="navbar">
     <div class="left-side">
       <a-space>
-        <a-link href="/dashboard" :hoverable="false" style="display: flex">
-          <img
-            alt="logo"
-            src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/dfdba5317c0c20ce20e64fac803d52bc.svg~tplv-49unhts6dw-image.image"
-          />
+        <a-link href="/dashboard" :hoverable="false" style="display: flex; justify-content: center; width: 250px;">
+          <img src="@/assets/btn-logo.png" alt="Logo" width="80" />
         </a-link>
       
         

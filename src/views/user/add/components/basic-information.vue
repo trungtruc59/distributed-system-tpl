@@ -1,122 +1,119 @@
 <template>
-    <a-form ref="formRef" :model="formData" class="form" :label-col-props="{ span: 4 }" :wrapper-col-props="{ span: 19 }">
-        <a-form-item
-            field="email"
-            :label="$t('userSetting.basicInfo.form.label.email')"
-            :rules="[
-              { required: true, message:'Email không được để trống' },
-              {
-                  validator: (value: string, cb: any) => {
-                      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                      if (!emailRegex.test(value)) {
-                          cb('Email không hợp lệ');
-                      } else {
-                          cb();
-                      }
-                  },
-              },
-            ]">
-            <a-input v-model="formData.email" :placeholder="$t('userSetting.basicInfo.placeholder.email')" />
-        </a-form-item>
-        <a-form-item
-            field="full_name"
-            :label="'Nhập họ và tên'"
-            :rules="[
-                {
-                    required: true,
-                    message: 'Họ và tên không được để trống',
-                },
-            ]"
-        >
-            <a-input v-model="formData.full_name" :placeholder="'Vui lòng nhập họ và tên'" />
-        </a-form-item>
-        <a-form-item
-            field="phone"
-            :label="'Số điện thoại'"
-            :rules="[
-                { required: true, message: 'Số điện thoại không được để trống' },
-                {
-                    validator: (value: string, cb: any) => {
-                        const phoneRegex = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-4|6-9])[0-9]{7}$/;
-                        if (!phoneRegex.test(value)) {
-                            cb('Số điện thoại không hợp lệ');
-                        } else {
-                            cb();
-                        }
-                    },
-                },
-                { pattern: /^[0-9]+$/, message: 'Số điện thoại không hợp lệ' },
-            ]"
-        >
-            <a-input v-model="formData.phone" :placeholder="'Vui lòng nhập số điện thoại'" />
-        </a-form-item>
-        <a-form-item
-            field="area"
-            :label="$t('userSetting.basicInfo.form.label.area')"
-            :rules="[
-                {
-                    required: true,
-                    message: $t('userSetting.form.error.area.required'),
-                },
-            ]"
-        >
-            <a-cascader
-                v-model="formData.area"
-                :placeholder="$t('userSetting.basicInfo.placeholder.area')"
-                :options="[
-                    {
-                        label: '北京',
-                        value: 'beijing',
-                        children: [
-                            {
-                                label: '北京',
-                                value: 'beijing',
-                                children: [
+    <a-form ref="formRef" label-align="left" :label-col-props="{ span: 10, offset: 0 }" :wrapper-col-props="{ span: 24 }" :model="formData" class="form">
+        <a-row :gutter="24">
+            <a-col :xs="{span: 24, offset: 0}" :sm="{span: 24, offset: 0}" :md="{span: 12, offset: 0}" :lg="{span: 12, offset: 0}">
+                <a-form-item
+                    field="full_name"
+                    :label="'Nhập họ và tên'"
+                    :rules="[
+                        {
+                            required: true,
+                            message: 'Họ và tên không được để trống',
+                        },
+                    ]"
+                >
+                    <a-input v-model="formData.full_name" :placeholder="'Nhập họ và tên'" />
+                </a-form-item>
+                <a-form-item
+                    field="email"
+                    :label="$t('userSetting.basicInfo.form.label.email')"
+                    :rules="[
+                      { required: true, message:'Email không được để trống' },
+                      {
+                          validator: (value: string, cb: any) => {
+                              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                              if (!emailRegex.test(value)) {
+                                  cb('Email không hợp lệ');
+                              } else {
+                                  cb();
+                              }
+                          },
+                      },
+                    ]"
+                >
+                    <a-input v-model="formData.email" placeholder="Nhập email" />
+                </a-form-item>
+                
+                <a-row :gutter="24">
+                    <a-col :span="12">
+                        <a-form-item :label-col-props="{ span: 16 }" :wrapper-col-props="{ span: 24 }" field="birthday" label="Ngày sinh" feedback>
+                            <a-date-picker v-model="formData.birthday" :placeholder="'Vui lòng chọn ngày sinh'" style="width: 100%; margin-left: 2px" />
+                        </a-form-item>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-form-item field="gender" label="Giới tính" :label-col-props="{ span: 16 }" :wrapper-col-props="{ span: 24 }">
+                            <a-cascader
+                                v-model="formData.gender"
+                                placeholder="Giới tính"
+                                style="width: 100%;"
+                                :options="[
                                     {
-                                        label: '朝阳',
-                                        value: 'chaoyang',
+                                        label: 'Nam',
+                                        value: 'Nam',
                                     },
-                                ],
-                            },
-                        ],
-                    },
-                ]"
-                allow-clear
-            />
-        </a-form-item>
-        <a-form-item field="address" :label="$t('userSetting.basicInfo.form.label.address')">
-            <a-input v-model="formData.address" :placeholder="$t('userSetting.basicInfo.placeholder.address')" />
-        </a-form-item>
-        <a-form-item
-            field="profile"
-            :label="$t('userSetting.basicInfo.form.label.profile')"
-            :rules="[
-                {
-                    maxLength: 200,
-                    message: $t('userSetting.form.error.profile.maxLength'),
-                },
-            ]"
-            row-class="keep-margin"
-        >
-            <a-textarea v-model="formData.profile" :placeholder="$t('userSetting.basicInfo.placeholder.profile')" />
-        </a-form-item>
-        <a-form-item>
-            <a-space>
-                <a-button type="primary" @click="validate"> Thêm tài khoản </a-button>
-                <a-button type="secondary" @click="reset">
-                    {{ $t('userSetting.reset') }}
-                </a-button>
-            </a-space>
-        </a-form-item>
+                                    {
+                                        label: 'Nữ',
+                                        value: 'Nữ',
+                                    },
+                                ]"
+                                allow-clear
+                            />
+                        </a-form-item>
+                    </a-col>
+                </a-row>
+            </a-col>
+            <a-col :xs="{span: 24, offset: 0}" :sm="{span: 24, offset: 0}" :md="{span: 12, offset: 0}" :lg="{span: 12, offset: 0}">
+                <a-form-item label="Ảnh đại diện ( Width:150 - Height:150 )" :label-col-props="{ span: 20 }" :wrapper-col-props="{ span: 20 }">
+                    <div class="avatar">
+                        <a-image
+                            style="margin-right: 20px;"
+                            width="150"
+                            :src="formData.avatar"
+                        />
+                    </div>
+                    <UploadFile @getUrlImg="handleGetUrlImg" :default-file-list="defaultFileList" />
+                </a-form-item>  
+               
+            </a-col>
+        </a-row>
+
+        <a-row :gutter="24" :justify="'center'">
+            <a-col style="margin-top: 20px;">
+                <a-form-item>
+                    <a-space>
+                        <a-button v-if="props.userDetail?.id" type="primary" @click="update({ errors: formRef.value?.getFieldsError(), values: formData })"> 
+                            Sửa thông tin
+                        </a-button>
+                        <a-button v-else type="primary" @click="validate({ errors: formRef.value?.getFieldsError(), values: formData })">
+                            Tạo tài khoản
+                        </a-button>
+                        <a-button type="secondary" @click="reset">
+                            {{ $t('userSetting.reset') }}
+                        </a-button>
+                    </a-space>
+                </a-form-item>
+            </a-col>
+        </a-row>
     </a-form>
 </template>
 
 <script lang="ts" setup>
-    import { ref } from 'vue';
-    import { FormInstance } from '@arco-design/web-vue';
+    import { ref, watch, defineProps } from 'vue';
+    import { useRouter, useRoute } from 'vue-router';
+    import { FormInstance, Message } from '@arco-design/web-vue';
+    import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
     import { BasicInfoModel } from '@/api/user-center';
+    import UploadFile from '@/components/UploadFile/index.vue';
+    import useLoading from '@/hooks/loading';
+    import { addAccount, updateAccount, updateUser } from '@/api/user';
+    import { accountRequest, User } from '@/types/userTypes';
 
+    const { loading, setLoading } = useLoading();
+    const route = useRoute();
+    const router = useRouter();
+    const { redirect, ...othersQuery } = route.query;
     const formRef = ref<FormInstance>();
+    const errorMessage = ref<string>('');
     const formData = ref<BasicInfoModel>({
         email: '',
         full_name: '',
@@ -127,20 +124,98 @@
         gender: '',
         role: '',
     });
-    const validate = async () => {
-        const res = await formRef.value?.validate();
-        if (!res) {
-            // do some thing
-            // you also can use html-type to submit
+
+    const props = defineProps({
+        userDetail: {
+            type: Object as () => accountRequest,
+            required: false
+        },
+        id: {
+            type: String,
+        }
+    });
+    const handleGetUrlImg = (url: string) => {
+        formData.value.avatar = url;
+    };
+
+    const validate = async ({ errors, values }: { errors: Record<string, ValidatedError> | undefined; values: Record<string, any> }) => {
+        if (loading.value) return;
+        if (!errors) {
+            setLoading(true);
+            try {
+                await addAccount(values);
+                Message.success('Tạo tài khoản thành công');
+                router.push({
+                    name: 'UserList',
+                    query: {
+                        ...othersQuery,
+                    },
+                });
+            } catch (err) {
+                console.log(err);
+
+                errorMessage.value = (err as Error).message;
+            } finally {
+                setLoading(false);
+            }
         }
     };
+
+    const update = async ({ errors, values }: { errors: Record<string, ValidatedError> | undefined; values: Record<string, any> }) => {
+        if (loading.value) return;
+        if (!errors) {
+            setLoading(true);
+            try {
+                await updateUser(props.id ? props.id : '', values);
+                Message.success('Cập nhật tài khoản thành công');
+            } catch (err) {
+                console.log(err);
+                errorMessage.value = (err as Error).message;
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+    const defaultFileList = ref<{ id:string ,name: string; url: string;}[]>([]);
+    if (props.userDetail && props.userDetail.userInfo.avatar) {
+        defaultFileList.value = [
+            {
+                id: '1',
+                name: 'avatar',
+                url: props.userDetail.userInfo.avatar,
+            },
+        ];
+    }
     const reset = async () => {
         await formRef.value?.resetFields();
     };
+    watch(
+    () => props.userDetail,
+    (newVal) => {
+        if (newVal) {
+        formData.value = {
+            full_name: newVal.userInfo.full_name || '',
+            birthday: newVal.userInfo.birthday || '',
+            avatar: newVal.userInfo.avatar || '',
+            gender: newVal.userInfo.gender || '',
+            phone: newVal.phone || '',
+            email: newVal.email || '',
+            role: newVal.role || '',
+            password: '',
+        }
+        }
+    },
+    { immediate: true } 
+    )
 </script>
 
 <style scoped lang="less">
     .form {
         width: 100%;
+    }
+    .avatar {
+        display: flex;
+        justify-content: left;
+        margin-bottom: 6px;
     }
 </style>

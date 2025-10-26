@@ -1,34 +1,51 @@
 <template>
-  <div class="container">
-    <Breadcrumb :items="['menu.user', 'menu.user.setting']" />
-    <a-row style="margin-bottom: 16px">
-      <a-col :span="24">
-        <UserPanel />
-      </a-col>
-    </a-row>
-    <a-row class="wrapper">
-      <a-col :span="24">
-        <a-tabs default-active-key="1" type="rounded">
-          <a-tab-pane key="1" :title="$t('userSetting.tab.basicInformation')">
-            <BasicInformation />
-          </a-tab-pane>
-          <a-tab-pane key="2" :title="$t('userSetting.tab.securitySettings')">
-            <SecuritySettings />
-          </a-tab-pane>
-          <a-tab-pane key="3" :title="$t('userSetting.tab.certification')">
-            <Certification />
-          </a-tab-pane>
-        </a-tabs>
-      </a-col>
-    </a-row>
+  <div class="wrap-main">
+    <Breadcrumb :routes="breadcrumbRoutes" />
+    <a-card class="general-card" :title="'Sửa thông tin người dùng'">
+      <a-row class="wrapper">
+        <BasicInformation :userDetail="userDetail" :id="idUser" />
+      </a-row>
+    </a-card>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import UserPanel from './components/user-panel.vue';
+  import { useRoute } from 'vue-router';
+  import { getUsers} from '@/api/user';
+  import { ref, onMounted } from 'vue';
+  import { accountRequest } from '@/types/userTypes';
   import BasicInformation from './components/basic-information.vue';
-  import SecuritySettings from './components/security-settings.vue';
-  import Certification from './components/certification.vue';
+
+  const route = useRoute();
+  const userDetail = ref<accountRequest>();
+  const idUser = ref('');
+  const { id } = route.params;
+  idUser.value = id as string;
+  const breadcrumbRoutes = [
+    { path: '/dashboard', label: 'Trang chủ' },
+    { path: '/user/list', label: 'Danh sách người dùng' },
+    { path: '/user/edit', label: 'Sửa thông tin' },
+  ]
+  const getDetailAccount = async () => {
+        try {
+          
+          const res = await getUsers();
+          const data = 'data' in res ? res.data : res;
+
+          // lọc user theo id
+          const foundUser = Array.isArray(data) ? data.find((item: any) => String(item.id) === String(id)) : null;
+          userDetail.value = foundUser || null;
+
+          console.log('User detail:', userDetail.value);
+            
+        } catch (err) {
+            console.error('fetchData error:', err);
+        }
+    };
+
+  onMounted(() => {
+      getDetailAccount();
+  });
 </script>
 
 <script lang="ts">
@@ -38,12 +55,12 @@
 </script>
 
 <style scoped lang="less">
-  .container {
+  .wrap-main {
     padding: 0 20px 20px 20px;
   }
 
   .wrapper {
-    padding: 20px 0 0 20px;
+    padding: 20px 20px;
     min-height: 580px;
     background-color: var(--color-bg-2);
     border-radius: 4px;

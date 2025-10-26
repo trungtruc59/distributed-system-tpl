@@ -4,13 +4,14 @@ export type accountRequest = {
   email: string;
   role: string;
   roleId: string;
+  userInfo: User;
 };
 
 export type User = {
-    fullname: string;
+    full_name: string;
     avatar: string;
     gender: string;
     birthday: string;
     createdAt: string;
     updatedAt: string;
-} & accountRequest;
+}

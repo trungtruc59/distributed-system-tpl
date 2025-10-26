@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="wrap-main">
         <Breadcrumb :routes="breadcrumbRoutes" />
         <a-card class="general-card" :title="$t('menu.user.list')">
             <a-divider style="margin-top: 0" />
@@ -281,7 +281,7 @@
 </script>
 
 <style scoped lang="less">
-    .container {
+    .wrap-main {
         padding: 0 20px 20px 20px;
     }
     :deep(.arco-table-th) {

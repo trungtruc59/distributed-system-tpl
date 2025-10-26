@@ -19,6 +19,15 @@ export const getUsers = (params?: CommonSearchParams) => {
 export const getUsersByAccountId = (accountId: string) => {
     return http.get<CommonAPIResponse<User[]>>(`api/user/${accountId}`);
 };
+export const addAccount = (data: Partial<User>) => {
+    return http.post<CommonAPIResponse<User>>('api/auth/register', data);
+};
+export const updateAccount = (id: string, data: Partial<User>) => {
+    return http.put<CommonAPIResponse<User>>(`api/account/${id}`, data);
+};
+export const updateUser = (id: string, data: Partial<User>) => {
+    return http.put<CommonAPIResponse<User>>(`api/user/${id}`, data);
+};
 export const deleteAccount = (id: string) => {
     return http.delete<CommonAPIResponse<void>>(`api/account/${id}`);
 };

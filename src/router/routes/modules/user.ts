@@ -34,7 +34,7 @@ const USER: AppRouteRecordRaw = {
             },
         },
         {
-            path: 'edit',
+            path: 'edit/:id',
             name: 'UserEdit',
             component: () => import('@/views/user/add/edit.vue'),
             meta: {
