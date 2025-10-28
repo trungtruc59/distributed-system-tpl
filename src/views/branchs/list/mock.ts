@@ -4,21 +4,22 @@ import setupMock, { successResponseWrap } from '@/utils/setup-mock';
 import { GetParams } from '@/types/global';
 
 const { Random } = Mock;
+
 const data = Mock.mock({
   'list|5': [
-      {
+    {
       'id|8': /[A-Z][a-z][-][0-9]/,
       'number|2-3': /[0-9]/,
-      'name|1': ['Aza Sport', 'Mina Sport', 'An gia Baminton', 'VL Baminton'],
+      'name|4-8': /[A-Z]/,
       'contentType|1': ['img', 'horizontalVideo', 'verticalVideo'],
       'phone': /^0\d{9}$/,
-      'address|1': ['Sài Gòn', 'Cần Thơ', 'Đồng Tháp', 'Vĩnh Long', 'An Giang', 'Kiên Giang'],
+      'address|10-20': /[A-Z][a-z][0-9]/,
       'status|1': ['available', 'full'],
       'filterType|1': ['artificial', 'rules'],
       'createdTime': Random.datetime(),
     },
-    ],
-  });
+  ],
+});
 
 setupMock({
   setup() {

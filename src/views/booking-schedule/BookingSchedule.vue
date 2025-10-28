@@ -97,7 +97,6 @@
 
     const handleBackToHomePage = () => {
         setSelectedBranch({});
-        bookingStore.resetStore();
         router.push({ name: 'home' });
     };
     const handleChange = (newItems) => {

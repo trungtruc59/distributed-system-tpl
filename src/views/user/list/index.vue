@@ -75,11 +75,11 @@
                         </a-button>
                       </a-tooltip>
                     </a-popconfirm>
-                    <a-button @click="handleClick">
+                    <a-button @click="openModal(record)" >
                         Cập nhật Role
                     </a-button>
-                    <a-modal v-model:visible="visible" title="Cập nhật Role" @cancel="handleCancel" @before-ok="(done) => handleBeforeOk(record.id, done)" :loading="loading">
-                        <a-form label-align="left" :model="formUpdateRole">
+                    <a-modal v-model:visible="visible" title="Cập nhật Role" @cancel="handleCancel" @before-ok="() => handleBeforeOk(record.id)" :loading="loading" destroy-on-close>
+                        <a-form label-align="left" :model="formUpdateRole" ref="formRef">
                             <a-form-item field="role" label="Phần quyền" :label-col-props="{ span: 16 }" :wrapper-col-props="{ span: 24 }">
                             <a-cascader
                                 v-model="formUpdateRole.role"
@@ -108,6 +108,7 @@
     import { getUsers, deleteAccount, activeAccount, updateRole, getRoles } from '@/api/user';
     import { useRouter } from 'vue-router';
     import Breadcrumb from '@/components/breadcrumb/index.vue';
+    import { done } from 'nprogress';
 
     const router = useRouter();
 
@@ -132,9 +133,10 @@
             status: '',
         };
     };
+    const formRef = ref();
     const options = ref<{ label: string; value: string }[]>([]);
     const formUpdateRole = ref({
-      role: ''
+        role: '', // chỉ 1 role duy nhất
     });
     const { loading, setLoading } = useLoading(true);
     const { t } = useI18n();
@@ -143,7 +145,16 @@
     const showColumns = ref<Column[]>([]);
 
     const size = ref<SizeProps>('medium');
-
+    const currentId = ref<string | null>(null);
+    const openModal = (record: any) => {
+        currentId.value = record.id;  // ✅ Gán id mỗi khi mở modal
+        visible.value = true;
+        formUpdateRole.value.role = record.role || ''; // nếu cần
+    };
+    const resetForm = () => {
+        formUpdateRole.value = { role: '' };
+        if (formRef.value) formRef.value.resetFields?.();
+    };
     const basePagination: Pagination = {
         current: 1,
         pageSize: 10,
@@ -285,33 +296,30 @@
         }
     };
     const visible = ref(false);
-    const handleClick = () => {
-      visible.value = true;
-    };
 
-    const handleBeforeOk = async (accountId: string, done: (closed: boolean) => void) => {
-
+    const handleBeforeOk = async (id: string) => {
+        if (!currentId.value) return;
         loading.value = true;
         try {
-            const { role } = formUpdateRole.value
-            const res = await updateRole(accountId, role);
-            window.setTimeout(() => {
-            visible.value = false
+            console.log(id);
+            
+            const res = await updateRole(currentId.value, formUpdateRole.value.role);
+            visible.value = false;
             done(true)
+            resetForm();
             fetchData(
                 pagination.value.current - 1,
                 pagination.value.pageSize
             );
-            }, 500)
         } catch (err) {
             console.error('Update role failed:', err)
         } finally {
-            
-            loading.value = false
+            loading.value = false;
         }
     };
     const handleCancel = () => {
       visible.value = false;
+      resetForm();
     }
     watch(
         () => columns.value,
