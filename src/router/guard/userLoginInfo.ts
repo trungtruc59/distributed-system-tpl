@@ -7,7 +7,7 @@ export default function setupUserLoginInfoGuard(router: Router) {
     router.beforeEach(async (to, from, next) => {
         NProgress.start();
         const userStore = useUserStore();
-        // Hydrate thông tin từ token khi mới vào trang và có token/thiếu role
+        // Nếu đã đăng nhập (có token), luôn hydrate để đồng bộ state từ token
         if (userStore.isLogin) {
             await userStore.hydrateFromToken();
         }
