@@ -1,5 +1,5 @@
 <template>
-    <a-layout-header class="user-public--header shadow-lg">
+    <a-layout-header class="user-public--header shadow-lg gap-4">
         <div class="header-left">
             <img src="http://res.cloudinary.com/dnrxsjo5r/image/upload/v1761142948/btn-logo.png.png" alt="Logo" class="logo" />
         </div>
@@ -16,7 +16,17 @@
         </div>
 
         <div class="header-right">
-            <a-button-group>
+            <a-dropdown v-if="userStore.isLogin" @select="handleSelect">
+                <a-avatar v-if="userStore.avatar">
+                    <img alt="avatar" :src="userStore.avatar" />
+                </a-avatar>
+                <a-avatar v-else>{{ userStore.full_name }}</a-avatar>
+                <template #content>
+                    <a-doption value="logout">Lịch sử đặt sân</a-doption>
+                    <a-doption value="logout">Đăng xuất</a-doption>
+                </template>
+            </a-dropdown>
+            <a-button-group v-else>
                 <a-button type="text" @click="handleRedirectToLoginPage"> Đăng nhập </a-button>
                 <a-button type="text" @click="handleRedirectToRegisterPage"> Đăng ký </a-button>
             </a-button-group>
@@ -28,6 +38,10 @@
     import { useRouter, useRoute } from 'vue-router';
     import { IconSearch } from '@arco-design/web-vue/es/icon';
     import useBranchStore from '@/store/modules/branches';
+    import useBookingStore from '@/store/modules/booking/bookingStore';
+    import { useUserStore } from '@/store';
+
+    const userStore = useUserStore();
 
     const { getAllBranchWithParams } = useBranchStore();
     const router = useRouter();
@@ -43,6 +57,12 @@
     const handleSearchBranch = (evt: KeyboardEvent) => {
         const { value } = evt.target;
         getAllBranchWithParams({ searchKey: value });
+    };
+
+    const handleSelect = (v) => {
+        if (v === 'logout') {
+            userStore.logout();
+        }
     };
 </script>
 

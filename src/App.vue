@@ -1,8 +1,6 @@
 <template>
     <a-config-provider :locale="locale">
         <router-view />
-        <!-- <transition name="fade-scale" mode="out-in">
-      </transition> -->
         <global-setting />
     </a-config-provider>
 </template>

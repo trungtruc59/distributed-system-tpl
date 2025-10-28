@@ -60,7 +60,7 @@
     import { ref, onMounted, watch, computed } from 'vue';
     import { useRouter } from 'vue-router';
     import TimeGrid from '@/components/time-grid/TimeGrid.vue';
-    import PublicHeader from '@/views/user-public-page/components/public-page-header/index.vue';
+    import PublicHeader from '@/views/user-public-page/components/public-page-header/PageHeader.vue';
 
     import useBranchStore from '@/store/modules/branches';
     import useBookingStore from '@/store/modules/booking/bookingStore';

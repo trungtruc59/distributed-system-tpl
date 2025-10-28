@@ -18,7 +18,7 @@
 <script setup lang="ts">
     import { onMounted, computed } from 'vue';
     import useBranchStore from '@/store/modules/branches';
-    import PublicHeader from './components/public-page-header/index.vue';
+    import PublicHeader from './components/public-page-header/PageHeader.vue';
     import BranchCard from './components/branch-infomation-card/BranchCard.vue';
 
     const branchStore = useBranchStore();

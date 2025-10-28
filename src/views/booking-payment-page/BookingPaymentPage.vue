@@ -96,7 +96,7 @@
     import { computed, reactive, ref } from 'vue';
     import { useRouter } from 'vue-router';
     import dayjs from 'dayjs';
-    import PublicHeader from '@/views/user-public-page/components/public-page-header/index.vue';
+    import PublicHeader from '@/views/user-public-page/components/public-page-header/PageHeader.vue';
     import useBranchStore from '@/store/modules/branches';
     import { Modal } from '@arco-design/web-vue';
     import useBookingStore from '@/store/modules/booking/bookingStore';
