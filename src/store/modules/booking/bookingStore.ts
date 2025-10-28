@@ -25,9 +25,7 @@ const useBookingStore = defineStore('booking', {
 
     actions: {
         resetStore() {
-            this.selectedCourt = [];
-            this.courts = [];
-            this.selectedDay = dayjs().unix();
+            this.$reset();
         },
         async getBookedCourt(branchId: string, day: number) {
             const rs = await branchService.getBookedCourtOfBranch(branchId, { day });
@@ -68,7 +66,7 @@ const useBookingStore = defineStore('booking', {
         calculatePeriodPrice(period: any, priceList: Price[], dayOfWeek: keyof typeof DayOfWeek, opts: any = {}) {
             const { priceUnit = 'perHour' } = opts;
 
-            const toMinutes = (t) => {
+            const toMinutes = (t: string) => {
                 const [h, m] = t.split(':').map(Number);
                 return h * 60 + m;
             };

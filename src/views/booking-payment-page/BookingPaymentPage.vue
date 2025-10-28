@@ -1,7 +1,6 @@
 <template>
-    <a-layout>
-        <PublicHeader />
-        <a-layout-content v-if="branch?.id">
+    <div v-if="branch?.id">
+        <a-scrollbar style="height: calc(100dvh - 64px); overflow: auto; width: 100%">
             <div class="container mx-auto flex flex-col gap-6 p-4">
                 <!-- <a-breadcrumb :routes="routes" /> -->
                 <div class="w-full bg-white rounded-2xl shadow p-8 space-y-10">
@@ -79,24 +78,23 @@
                     </section>
                 </div>
             </div>
-        </a-layout-content>
+        </a-scrollbar>
+    </div>
 
-        <!-- Khi không có branch -->
-        <a-result v-else status="404" subtitle="Whoops, that page is gone.">
-            <template #extra>
-                <a-space>
-                    <a-button type="primary" @click="handleBackToHomePage">Back</a-button>
-                </a-space>
-            </template>
-        </a-result>
-    </a-layout>
+    <!-- Khi không có branch -->
+    <a-result v-else status="404" subtitle="Whoops, that page is gone.">
+        <template #extra>
+            <a-space>
+                <a-button type="primary" @click="handleBackToHomePage">Back</a-button>
+            </a-space>
+        </template>
+    </a-result>
 </template>
 
 <script setup>
     import { computed, reactive, ref } from 'vue';
     import { useRouter } from 'vue-router';
     import dayjs from 'dayjs';
-    import PublicHeader from '@/views/user-public-page/components/public-page-header/PageHeader.vue';
     import useBranchStore from '@/store/modules/branches';
     import { Modal } from '@arco-design/web-vue';
     import useBookingStore from '@/store/modules/booking/bookingStore';

@@ -1,24 +1,19 @@
 <template>
-    <a-layout class="user-public--page-layout">
-        <PublicHeader />
-        <a-layout-content :class="branchStore.isLoading ? ' user-public--page-loading' : 'user-public--content'">
-            <a-spin v-if="branchStore.isLoading" :loading="true" dot>
-                <div style="width: 96vw; height: 30vh; margin: auto"></div>
-            </a-spin>
-            <a-scrollbar v-if="!branchStore.isLoading" style="height: calc(100dvh - 64px); overflow: auto; width: 100%">
-                <div class="user-public--container">
-                    <BranchCard v-for="b in branches" :key="b.id" :branch="b" />
-                </div>
-            </a-scrollbar>
-        </a-layout-content>
-        <!-- <a-layout-footer class="user-public--footer">Footer</a-layout-footer> -->
-    </a-layout>
+    <div :class="branchStore.isLoading ? ' user-public--page-loading' : 'user-public--content'">
+        <a-spin v-if="branchStore.isLoading" :loading="true" dot>
+            <div style="width: 96vw; height: 30vh; margin: auto"></div>
+        </a-spin>
+        <a-scrollbar v-if="!branchStore.isLoading" style="height: calc(100dvh - 64px); overflow: auto; width: 100%">
+            <div class="user-public--container">
+                <BranchCard v-for="b in branches" :key="b.id" :branch="b" />
+            </div>
+        </a-scrollbar>
+    </div>
 </template>
 
 <script setup lang="ts">
     import { onMounted, computed } from 'vue';
     import useBranchStore from '@/store/modules/branches';
-    import PublicHeader from './components/public-page-header/PageHeader.vue';
     import BranchCard from './components/branch-infomation-card/BranchCard.vue';
 
     const branchStore = useBranchStore();

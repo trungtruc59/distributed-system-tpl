@@ -1,7 +1,7 @@
 <template>
     <a-layout-header class="user-public--header shadow-lg gap-4">
         <div class="header-left">
-            <img src="http://res.cloudinary.com/dnrxsjo5r/image/upload/v1761142948/btn-logo.png.png" alt="Logo" class="logo" />
+            <img src="http://res.cloudinary.com/dnrxsjo5r/image/upload/v1761142948/btn-logo.png.png" alt="Logo" class="logo cursor-pointer" @click="handleRedirectToHome" />
         </div>
 
         <div class="header-search-box">
@@ -16,14 +16,22 @@
         </div>
 
         <div class="header-right">
-            <a-dropdown v-if="userStore.isLogin" @select="handleSelect">
+            <a-dropdown v-if="userStore.isLogin" position="bl" @select="handleSelect">
                 <a-avatar v-if="userStore.avatar">
                     <img alt="avatar" :src="userStore.avatar" />
                 </a-avatar>
                 <a-avatar v-else>{{ userStore.full_name }}</a-avatar>
                 <template #content>
-                    <a-doption value="logout">Lịch sử đặt sân</a-doption>
-                    <a-doption value="logout">Đăng xuất</a-doption>
+                    <a-doption value="user-profile">
+                        <template #icon>
+                            <i class="bxr bx-user"></i>
+                        </template>
+                        <template #default>Thông tin người dùng</template>
+                    </a-doption>
+                    <a-doption value="logout">
+                        <template #icon><i class="bxr bx-arrow-out-right-square-half"></i> </template>
+                        <template #default> Đăng xuất </template>
+                    </a-doption>
                 </template>
             </a-dropdown>
             <a-button-group v-else>
@@ -38,12 +46,13 @@
     import { useRouter, useRoute } from 'vue-router';
     import { IconSearch } from '@arco-design/web-vue/es/icon';
     import useBranchStore from '@/store/modules/branches';
-    import useBookingStore from '@/store/modules/booking/bookingStore';
     import { useUserStore } from '@/store';
+    import useBookingStore from '@/store/modules/booking/bookingStore';
 
     const userStore = useUserStore();
 
     const { getAllBranchWithParams } = useBranchStore();
+    const bookingStore = useBookingStore();
     const router = useRouter();
     const route = useRoute();
     const handleRedirectToLoginPage = () => {
@@ -54,6 +63,11 @@
         router.push({ name: 'register' });
     };
 
+    const handleRedirectToHome = () => {
+        bookingStore.resetStore();
+        router.push({ name: 'home' });
+    };
+
     const handleSearchBranch = (evt: KeyboardEvent) => {
         const { value } = evt.target;
         getAllBranchWithParams({ searchKey: value });
@@ -62,6 +76,10 @@
     const handleSelect = (v) => {
         if (v === 'logout') {
             userStore.logout();
+            return;
+        }
+        if (typeof v === 'string') {
+            router.push({ name: v });
         }
     };
 </script>

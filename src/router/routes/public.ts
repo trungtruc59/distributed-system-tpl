@@ -21,6 +21,12 @@ const publicRoutes = [
                 component: () => import('@/views/booking-payment-page/BookingPaymentPage.vue'),
                 meta: { requiresAuth: false },
             },
+            {
+                path: 'user-profile',
+                name: 'user-profile',
+                component: () => import('@/views/user-public-profile/UserPublicProfile.vue'),
+                meta: { requiresAuth: false },
+            },
         ],
     },
 ];
