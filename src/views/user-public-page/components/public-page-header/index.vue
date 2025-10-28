@@ -1,7 +1,7 @@
 <template>
     <a-layout-header class="user-public--header shadow-lg">
         <div class="header-left">
-            <img src="http://res.cloudinary.com/dnrxsjo5r/image/upload/v1761142948/btn-logo.png.png" alt="Logo" class="logo" />
+            <img src="http://res.cloudinary.com/dnrxsjo5r/image/upload/v1761142948/btn-logo.png.png" alt="Logo" class="logo" @click="handleRedirectToHome" />
         </div>
 
         <div class="header-search-box">
@@ -28,12 +28,19 @@
     import { useRouter, useRoute } from 'vue-router';
     import { IconSearch } from '@arco-design/web-vue/es/icon';
     import useBranchStore from '@/store/modules/branches';
+    import useBookingStore from '@/store/modules/booking/bookingStore';
 
     const { getAllBranchWithParams } = useBranchStore();
+    const bookingStore = useBookingStore();
     const router = useRouter();
     const route = useRoute();
     const handleRedirectToLoginPage = () => {
         router.push({ name: 'login' });
+    };
+
+    const handleRedirectToHome = () => {
+        bookingStore.resetStore();
+        router.push({ name: 'home' });
     };
 
     const handleRedirectToRegisterPage = () => {
