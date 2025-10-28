@@ -10,13 +10,27 @@
                     </div>
                 </template>
                 <template #extra>
-                    <a-date-picker style="width: 200px" :default-value="dayjs()" :allow-clear="false" :disabled-date="disablePastDates" @change="handleChangeTime" />
+                    <a-date-picker
+                        style="width: 200px"
+                        :default-value="bookingStore.selectedDay * 1000"
+                        :allow-clear="false"
+                        :disabled-date="disablePastDates"
+                        @change="handleChangeTime"
+                    />
                 </template>
             </a-page-header>
             <a-spin :loading="isLoading" style="width: 100%">
                 <div class="p-8">
+                    <div class="flex gap-2 items-center mb-8">
+                        <div class="border border-gray-500 w-6 h-6 rounded-sm" />
+                        Trống
+                        <div class="border border-gray-500 bg-red-300 w-6 h-6 rounded-sm" />
+                        Đã đặt
+                        <div class="border border-gray-500 bg-[#4CAF50] w-6 h-6 rounded-sm" />
+                        Đang chọn
+                    </div>
                     <TimeGrid
-                        :labels="branchStore.courts.map((court) => court.name)"
+                        :labels="bookingStore.courts.map((court) => court.name)"
                         :start="branch.openTime"
                         :end="branch.closeTime"
                         :time-scale="30"
@@ -29,7 +43,7 @@
             </a-spin>
         </a-layout-content>
         <a-layout-footer v-if="branch?.id" class="flex justify-end px-4">
-            <a-button :disabled="isDisablePayButton" type="outline">Tiếp theo</a-button>
+            <a-button :disabled="isDisablePayButton" type="outline" @click="handlePaymentCourt">Tiếp theo</a-button>
         </a-layout-footer>
         <a-result v-if="!branch?.id" status="404" subtitle="Whoops, that page is gone.">
             <template #extra>
@@ -44,19 +58,19 @@
 <script setup>
     import dayjs from 'dayjs';
     import { ref, onMounted, watch, computed } from 'vue';
+    import { useRouter } from 'vue-router';
     import TimeGrid from '@/components/time-grid/TimeGrid.vue';
     import PublicHeader from '@/views/user-public-page/components/public-page-header/index.vue';
 
     import useBranchStore from '@/store/modules/branches';
-    import { useRouter } from 'vue-router';
+    import useBookingStore from '@/store/modules/booking/bookingStore';
 
     const router = useRouter();
 
-    const branchStore = useBranchStore();
-    const { selectedBranch: branch, setSelectedBranch, getBookedCourt, getAllCourtOfBranch } = useBranchStore();
+    const bookingStore = useBookingStore();
+    const { selectedBranch: branch, setSelectedBranch } = useBranchStore();
     const items = ref([]);
     const bookedCourts = ref([]);
-    const selectedDay = ref(dayjs().unix());
     const isLoading = ref(false);
 
     const handleRenewItems = (bookedList) => {
@@ -76,6 +90,11 @@
         items.value = Object.values(bookedCourtsMerged);
     };
 
+    const handlePaymentCourt = () => {
+        bookingStore.selectedCourt = items;
+        router.push({ name: 'payment' });
+    };
+
     const handleBackToHomePage = () => {
         setSelectedBranch({});
         router.push({ name: 'home' });
@@ -89,33 +108,33 @@
     };
 
     const handleChangeTime = (value) => {
-        selectedDay.value = dayjs(value).unix();
+        bookingStore.selectedDay = dayjs(value).unix();
     };
 
     onMounted(async () => {
         if (!branch?.id) return;
         isLoading.value = true;
-        await getAllCourtOfBranch(branch.id);
-        const res = await getBookedCourt(branch.id, selectedDay.value);
+        await bookingStore.getAllCourtOfBranch(branch.id);
+        const res = await bookingStore.getBookedCourt(branch.id, bookingStore.selectedDay);
         bookedCourts.value = res;
         isLoading.value = false;
     });
 
-    watch(selectedDay, async (newVal, oldVal) => {
+    watch(bookingStore.selectedDay, async (newVal, oldVal) => {
         if (newVal !== oldVal) {
             isLoading.value = true;
-            bookedCourts.value = await getBookedCourt(branch.id, selectedDay.value);
+            bookedCourts.value = await bookingStore.getBookedCourt(branch.id, bookingStore.selectedDay);
             isLoading.value = false;
         }
     });
 
     watch(bookedCourts, (newValue) => {
+        if (bookingStore.selectedCourt.length) {
+            items.value = bookingStore.selectedCourt;
+            return;
+        }
         handleRenewItems(newValue);
     });
-
-    // watch(items, (v) => {
-    //     console.log({ items: v });
-    // });
 
     const isDisablePayButton = computed(() => {
         const selectedCourts = [];

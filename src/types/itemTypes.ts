@@ -1,4 +1,4 @@
-import { DayOfWeek } from '@/store/modules/branches/dayMapping.constant';
+import { DayOfWeek } from '@/store/modules/booking/dayMapping.constant';
 
 export type Price = {
     dayOfWeek: keyof typeof DayOfWeek;

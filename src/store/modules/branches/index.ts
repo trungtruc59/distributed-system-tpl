@@ -7,7 +7,7 @@ import * as courtService from '@/api/court';
 import { Branch, BranchRequest } from '@/types/branchTypes';
 import dayjs from 'dayjs';
 import { Price } from '@/types/itemTypes';
-import { DayNumberToEnum } from './dayMapping.constant';
+import { DayNumberToEnum } from '../booking/dayMapping.constant';
 
 export type useBranchStoreProps = {
     branches: Branch[];
@@ -88,34 +88,6 @@ const useBranchStore = defineStore('branch', {
             } else {
                 this.showNotify(rs);
             }
-        },
-
-        async getBookedCourt(branchId: string, day: number) {
-            const rs = await branchService.getBookedCourtOfBranch(branchId, { day });
-            if (rs && 'data' in rs) {
-                return rs.data;
-            }
-            this.showNotify(rs);
-            return [];
-        },
-
-        async getAllCourtOfBranch(branchId: string) {
-            const rs = await courtService.getCourtOfBranch(branchId);
-            if (rs && 'data' in rs) {
-                console.log({ rs });
-
-                this.courts = rs.data;
-            } else {
-                this.showNotify(rs);
-            }
-        },
-
-        getPriceOfCourt(courtName: string, selectedDay: string) {
-            const dayNumber = dayjs(selectedDay).day();
-            const dayString = DayNumberToEnum[dayNumber];
-
-            const selectedCourt = this.courts.find((c) => c.name === courtName);
-            return selectedCourt.prices.filter((price: Price) => price.dayOfWeek === dayString);
         },
 
         setSelectedBranch(branch: Branch) {
