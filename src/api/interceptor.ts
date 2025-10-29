@@ -65,13 +65,14 @@ axios.interceptors.response.use(
         return res;
     },
     (error) => {
+        const errorMessage = error?.response?.data || { message: error.message };
         Notification.error({
             title: 'Thao tác không thành công',
-            content: error?.response?.data?.message || error.message,
+            content: errorMessage.message,
             closable: true,
             style: { width: '350px' },
             duration: 5 * 1000,
         });
-        return Promise.reject(error);
+        return errorMessage;
     }
 );

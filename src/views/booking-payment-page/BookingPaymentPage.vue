@@ -148,6 +148,7 @@
             phone: form.phone,
             bookingDate: dayjs().toISOString(),
             paid: false,
+            branchId: branch.id,
             details: scheduleList.value.map((schedule) => {
                 const [sHour, sMinute] = schedule.start.split(':').map(Number);
                 const [eHour, eMinute] = schedule.end.split(':').map(Number);

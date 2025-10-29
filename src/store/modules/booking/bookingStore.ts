@@ -32,7 +32,6 @@ const useBookingStore = defineStore('booking', {
             if (rs && 'data' in rs) {
                 return rs.data;
             }
-            this.showNotify(rs);
             return [];
         },
 
@@ -41,7 +40,6 @@ const useBookingStore = defineStore('booking', {
             if (rs && 'data' in rs) {
                 return rs.data;
             }
-            this.showNotify(rs);
             return null;
         },
 
@@ -49,8 +47,6 @@ const useBookingStore = defineStore('booking', {
             const rs = await courtService.getCourtOfBranch(branchId);
             if (rs && 'data' in rs) {
                 this.courts = rs.data;
-            } else {
-                this.showNotify(rs);
             }
         },
 
@@ -102,15 +98,6 @@ const useBookingStore = defineStore('booking', {
             });
 
             return Math.round(total);
-        },
-
-        showNotify(rs: any) {
-            Notification.error({
-                title: 'Error',
-                content: rs.message,
-                closable: true,
-                style: { width: '500px' },
-            });
         },
     },
 });

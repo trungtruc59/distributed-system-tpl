@@ -38,8 +38,6 @@ const useBranchStore = defineStore('branch', {
                 this.isLoading = false;
                 if (rs && 'data' in rs) {
                     this.branches = rs.data;
-                } else {
-                    this.showNotify(rs);
                 }
             } catch (e) {
                 this.isLoading = false;
@@ -52,8 +50,6 @@ const useBranchStore = defineStore('branch', {
             this.isLoading = false;
             if (rs && 'data' in rs) {
                 this.selectedBranch = rs.data;
-            } else {
-                this.showNotify(rs);
             }
         },
 
@@ -63,8 +59,6 @@ const useBranchStore = defineStore('branch', {
             this.isLoading = false;
             if (rs && 'data' in rs) {
                 this.getAllBranchWithParams();
-            } else {
-                this.showNotify(rs);
             }
         },
 
@@ -74,8 +68,6 @@ const useBranchStore = defineStore('branch', {
             this.isLoading = false;
             if (rs && 'data' in rs) {
                 this.selectedBranch = rs.data;
-            } else {
-                this.showNotify(rs);
             }
         },
 
@@ -85,22 +77,11 @@ const useBranchStore = defineStore('branch', {
             this.isLoading = false;
             if (rs && 'data' in rs) {
                 this.getAllBranchWithParams();
-            } else {
-                this.showNotify(rs);
             }
         },
 
         setSelectedBranch(branch: Branch) {
             this.selectedBranch = branch;
-        },
-
-        showNotify(rs: any) {
-            Notification.error({
-                title: 'Error',
-                content: rs.message,
-                closable: true,
-                style: { width: '500px' },
-            });
         },
     },
 });
