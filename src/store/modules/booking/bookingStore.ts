@@ -25,7 +25,9 @@ const useBookingStore = defineStore('booking', {
 
     actions: {
         resetStore() {
-            this.$reset();
+            this.selectedCourt = [];
+            this.courts = [];
+            this.selectedDay = dayjs().unix();
         },
         async getBookedCourt(branchId: string, day: number) {
             const rs = await branchService.getBookedCourtOfBranch(branchId, { day });

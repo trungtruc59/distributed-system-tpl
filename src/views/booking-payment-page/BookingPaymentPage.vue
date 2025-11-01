@@ -158,11 +158,15 @@
                     startTime: dayjs(selectedDay * 1000)
                         .hour(sHour)
                         .minute(sMinute)
+                        .second(0)
+                        .millisecond(0)
                         .add(7, 'hour')
                         .toISOString(),
                     endTime: dayjs(selectedDay * 1000)
                         .hour(eHour)
                         .minute(eMinute)
+                        .second(0)
+                        .millisecond(0)
                         .add(7, 'hour')
                         .toISOString(),
                 };

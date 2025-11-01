@@ -98,7 +98,7 @@
                             </a-space>
                         </a-doption>
                         <a-doption>
-                            <a-space @click="$router.push({ name: 'Setting' })">
+                            <a-space @click="router.push({ name: 'Setting' })">
                                 <icon-settings />
                                 <span>
                                     {{ $t('messageBox.userSettings') }}
@@ -127,13 +127,14 @@
     import { useAppStore, useUserStore } from '@/store';
     import { LOCALE_OPTIONS } from '@/locale';
     import useLocale from '@/hooks/locale';
-    import useUser from '@/hooks/user';
     import Menu from '@/components/menu/index.vue';
+    import { useRouter } from 'vue-router';
     import NotificationBell from '../notifiction-bell/NotificationBell.vue';
+
+    const router = useRouter();
 
     const appStore = useAppStore();
     const userStore = useUserStore();
-    const { logout } = useUser();
     const { changeLocale, currentLocale } = useLocale();
     const { isFullscreen, toggle: toggleFullScreen } = useFullscreen();
     const locales = [...LOCALE_OPTIONS];
@@ -165,7 +166,8 @@
     const triggerBtn = ref();
 
     const handleLogout = () => {
-        logout();
+        userStore.logout();
+        router.push({ name: 'login' });
     };
     const setDropDownVisible = () => {
         const event = new MouseEvent('click', {
@@ -233,14 +235,6 @@
         }
         .trigger-btn {
             margin-left: 14px;
-        }
-    }
-</style>
-
-<style lang="less">
-    .message-popover {
-        .arco-popover-content {
-            margin-top: 0;
         }
     }
 </style>
