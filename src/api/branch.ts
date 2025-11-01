@@ -6,7 +6,9 @@ import http from './http';
 export const getBranches = (params?: CommonSearchParams) => {
     return http.get<CommonAPIResponse<Branch[]>>('api/branch', params);
 };
-
+export const getUserBranches = (params?: CommonSearchParams) => {
+    return http.get<CommonAPIResponse<Branch[]>>('api/branch/owner', params);
+};
 export const getBranch = (branchId: string) => {
     return http.get<CommonAPIResponse<Branch>>(`api/branch/${branchId}`);
 };

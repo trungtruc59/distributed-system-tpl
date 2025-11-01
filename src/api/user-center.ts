@@ -48,6 +48,7 @@ export interface BasicInfoModel {
   avatar: string;
   gender: string;
   role: string;
+  activeBranch: string;
 }
 
 export interface EnterpriseCertificationModel {

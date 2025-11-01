@@ -33,7 +33,85 @@
                 >
                     <a-input v-model="formData.email" placeholder="Nhập email" />
                 </a-form-item>
-                
+                <a-row :gutter="24">
+                    <a-col :span="12">
+                        <a-form-item 
+                                field="phone" 
+                                :label="'Số điện thoại'"
+                                :rules="[
+                                    { required: true, message: 'Số điện thoại không được để trống' },
+                                    {
+                                        validator: (value: string, cb: any) => {
+                                            const phoneRegex = /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-4|6-9])[0-9]{7}$/;
+                                            if (!phoneRegex.test(value)) {
+                                                cb('Số điện thoại không hợp lệ');
+                                            } else {
+                                                cb();
+                                            }
+                                        },
+                                    },
+                                    { pattern: /^[0-9]+$/, message: 'Số điện thoại chỉ được chứa chữ số' },
+                                ]"
+                                :validate-trigger="['change', 'blur']" >
+                            <a-input
+                                v-model="formData.phone"
+                                class="cus-input"
+                                :placeholder="$t('register.form.phone.placeholder')"
+                                type="tel"
+                                inputmode="numeric"
+                                @input="formData.phone = formData.phone.replace(/\D/g, '')"
+                            >
+                                <template #prefix>
+                                    <icon-user />
+                                </template>
+                            </a-input>
+                        </a-form-item>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-form-item
+                            field="password"
+                            :label="'Mật khẩu'"
+                            :rules="[
+                                { required: true, message: 'Mật khẩu không được để trống' },
+                                { minLength: 5, message: 'Mật khẩu phải có ít nhất 5 ký tự' },
+                                {
+                                    validator: (value: string, cb: (error?: string) => void) => {
+                                        if (!value) {
+                                            cb('Vui lòng nhập mật khẩu');
+                                            return;
+                                        }
+
+                                        if (value.length < 5) {
+                                            cb('Mật khẩu phải có ít nhất 5 ký tự');
+                                            return;
+                                        }
+
+                                        const hasUpper = /[A-Z]/.test(value);
+                                        const hasLower = /[a-z]/.test(value);
+                                        const hasSpecial = /[\W_]/.test(value);
+
+                                        if (!hasUpper || !hasLower || !hasSpecial) {
+                                            cb('Phải có ít nhất 1 chữ hoa, 1 chữ thường và 1 ký tự đặc biệt');
+                                        } else {
+                                            cb(); // hợp lệ
+                                        }
+                                    },
+                                },
+                            ]"
+                            :validate-trigger="['change', 'blur']"
+                        >
+                            <a-input
+                                v-model="formData.password"
+                                type="password"
+                                :placeholder="'Nhập mật khẩu'"
+                            >
+                                <template #prefix>
+                                    <icon-lock />
+                                </template>
+                            </a-input>
+                        </a-form-item>
+                    </a-col>
+                </a-row>
                 <a-row :gutter="24">
                     <a-col :span="12">
                         <a-form-item :label-col-props="{ span: 16 }" :wrapper-col-props="{ span: 24 }" field="birthday" label="Ngày sinh" feedback>
@@ -56,6 +134,30 @@
                                         value: 'Nữ',
                                     },
                                 ]"
+                                allow-clear
+                            />
+                        </a-form-item>
+                    </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                    <a-col :span="12">
+                        <a-form-item field="role" label="Phần quyền" :label-col-props="{ span: 16 }" :wrapper-col-props="{ span: 24 }">
+                            <a-cascader
+                                v-model="formData.role"
+                                placeholder="Chọn phần quyền"
+                                style="width: 100%;"
+                                :options="options"
+                                allow-clear
+                            />
+                        </a-form-item>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-form-item field="activeBranch" label="Chi nhánh" :label-col-props="{ span: 16 }" :wrapper-col-props="{ span: 24 }">
+                            <a-cascader
+                                v-model="formData.activeBranch"
+                                placeholder="Chi nhánh"
+                                style="width: 100%;"
+                                :options="optBranchs"
                                 allow-clear
                             />
                         </a-form-item>
@@ -105,7 +207,8 @@
     import { BasicInfoModel } from '@/api/user-center';
     import UploadFile from '@/components/UploadFile/index.vue';
     import useLoading from '@/hooks/loading';
-    import { addAccount, updateAccount, updateUser } from '@/api/user';
+    import { addAccount, updateAccount, updateUser, getRoles } from '@/api/user';
+    import { getUserBranches } from '@/api/branch';
     import { accountRequest, User } from '@/types/userTypes';
 
     const { loading, setLoading } = useLoading();
@@ -123,8 +226,9 @@
         avatar: '',
         gender: '',
         role: '',
+        activeBranch: '',
     });
-
+    
     const props = defineProps({
         userDetail: {
             type: Object as () => accountRequest,
@@ -137,6 +241,38 @@
     const handleGetUrlImg = (url: string) => {
         formData.value.avatar = url;
     };
+    const options = ref<{ label: string; value: string }[]>([]);
+    const optBranchs = ref<{ label: string; value: string }[]>([]);
+    // Fetch roles for the role selection
+    const cloneRoles = async () => {
+        setLoading(true);
+        try {
+            const res = await getRoles();
+            const data = 'data' in res ? res.data : res;
+            options.value = Array.isArray(data) ? data.map((role: any) => ({ label: role.title, value: role.id })) : [];
+            
+        } catch (err) {
+            console.error('fetchData error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+    cloneRoles();
+    // Fetch branchs for the branch selection
+    const cloneBranchs = async () => {
+        setLoading(true);
+        try {
+            const res = await getUserBranches();
+            const data = 'data' in res ? res.data : res;
+            optBranchs.value = Array.isArray(data) ? data.map((role: any) => ({ label: role.name, value: role.id })) : [];
+            
+        } catch (err) {
+            console.error('fetchData error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+    cloneBranchs();
 
     const validate = async ({ errors, values }: { errors: Record<string, ValidatedError> | undefined; values: Record<string, any> }) => {
         if (loading.value) return;
@@ -146,7 +282,7 @@
                 await addAccount(values);
                 Message.success('Tạo tài khoản thành công');
                 router.push({
-                    name: 'UserList',
+                    name: 'List',
                     query: {
                         ...othersQuery,
                     },
@@ -166,14 +302,14 @@
         if (!errors) {
             setLoading(true);
             try {
-                await updateUser(props.id ? props.id : '', values);
+                await updateAccount(props.id ? props.id : '', values);
                 Message.success('Cập nhật tài khoản thành công');
-                router.push({
-                    name: 'List',
-                    query: {
-                        ...othersQuery,
-                    },
-                });
+                // router.push({
+                //     name: 'List',
+                //     query: {
+                //         ...othersQuery,
+                //     },
+                // });
             } catch (err) {
                 console.log(err);
                 errorMessage.value = (err as Error).message;
@@ -183,12 +319,12 @@
         }
     };
     const defaultFileList = ref<{ id:string ,name: string; url: string;}[]>([]);
-    if (props.userDetail && props.userDetail.userInfo.avatar) {
+    if (props.userDetail && props.userDetail.avatar) {
         defaultFileList.value = [
             {
                 id: '1',
                 name: 'avatar',
-                url: props.userDetail.userInfo.avatar,
+                url: props.userDetail.avatar,
             },
         ];
     }
@@ -199,6 +335,10 @@
                 ...othersQuery,
             },
         });
+    };
+    const findRoleIdByTitle = (title: string) => {
+        const found = options.value.find(r => r.label === title);
+        return found ? found.value : '';
     };
     watch(
     () => props.userDetail,
@@ -211,7 +351,8 @@
             gender: newVal.userInfo.gender || '',
             phone: newVal.phone || '',
             email: newVal.email || '',
-            role: newVal.role || '',
+            role: findRoleIdByTitle(newVal.role) || '',
+            activeBranch: newVal.userInfo.activeBranch || '',
             password: '',
         }
         }

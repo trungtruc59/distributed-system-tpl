@@ -104,7 +104,7 @@
     import { Pagination } from '@/types/global';
     import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
     import cloneDeep from 'lodash/cloneDeep';
-    import { User } from '@/types/userTypes';
+    import { User,  accountRequest } from '@/types/userTypes';
     import { getUsers, deleteAccount, activeAccount, updateRole, getRoles } from '@/api/user';
     import { useRouter } from 'vue-router';
     import Breadcrumb from '@/components/breadcrumb/index.vue';
@@ -140,14 +140,14 @@
     });
     const { loading, setLoading } = useLoading(true);
     const { t } = useI18n();
-    const renderData = ref<User[]>([]);
+    const renderData = ref<accountRequest[]>([]);
     const cloneColumns = ref<Column[]>([]);
     const showColumns = ref<Column[]>([]);
 
     const size = ref<SizeProps>('medium');
     const currentId = ref<string | null>(null);
     const openModal = (record: any) => {
-        currentId.value = record.id;  // ✅ Gán id mỗi khi mở modal
+        currentId.value = record.id; 
         visible.value = true;
         formUpdateRole.value.role = record.role || ''; // nếu cần
     };
@@ -240,8 +240,13 @@
                 pageSize: size,
             });
             const data = 'data' in res ? res.data : res;
+            const filteredData = Array.isArray(data)
+            ? (data as accountRequest[]).filter((item) => item.deleted === false)
+            : [];
+            console.log(filteredData);
+            
             const totalElements = 'totalElements' in res ? res.totalElements : 0;
-            renderData.value = Array.isArray(data) ? (data as User[]) : [];
+            renderData.value = filteredData;
             pagination.value.total = totalElements;
             
         } catch (err) {
@@ -269,14 +274,16 @@
     };
     const handleDelete = async (id: string) => {
         setLoading(true);
+        const oldData = [...renderData.value];
+        renderData.value = renderData.value.filter(item => item.id !== id);
+        pagination.value.total = (pagination.value.total ?? 0) - 1;
         try {
             await deleteAccount(id)
-            fetchData(
-                pagination.value.current - 1,
-                pagination.value.pageSize
-            );
         } catch (err) {
             console.error('delete error:', err);
+             renderData.value = oldData;
+            pagination.value.total = (pagination.value.total ?? 0) + 1;
+           
         } finally {
             setLoading(false);
         }
@@ -301,8 +308,6 @@
         if (!currentId.value) return;
         loading.value = true;
         try {
-            console.log(id);
-            
             const res = await updateRole(currentId.value, formUpdateRole.value.role);
             visible.value = false;
             done(true)

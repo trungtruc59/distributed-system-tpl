@@ -1,5 +1,5 @@
 // import qs from 'query-string';
-import { User } from '@/types/userTypes';
+import { User, accountRequest } from '@/types/userTypes';
 import { CommonAPIErrorResponse, CommonAPIResponse, CommonSearchParams } from '@/types/CommonTypes';
 import http from './http';
 
@@ -12,7 +12,7 @@ export interface RoleRes {
     title: string;
 }
 export interface PolicyListRes {
-    data: User[];
+    data: accountRequest[];
     totalPages: number;
     totalElements: number;
 }
@@ -28,11 +28,11 @@ export const getRoles = () => {
     return http.get<CommonAPIResponse<RoleRes[]>>('api/role');
 };
 
-export const addAccount = (data: Partial<User>) => {
-    return http.post<CommonAPIResponse<User>>('api/auth/register', data);
+export const addAccount = (data: Partial<accountRequest>) => {
+    return http.post<CommonAPIResponse<accountRequest>>('api/auth/register', data);
 };
-export const updateAccount = (id: string, data: Partial<User>) => {
-    return http.put<CommonAPIResponse<User>>(`api/account/${id}`, data);
+export const updateAccount = (id: string, data: Partial<accountRequest>) => {
+    return http.put<CommonAPIResponse<accountRequest>>(`api/account/${id}`, data);
 };
 export const updateUser = (id: string, data: Partial<User>) => {
     return http.put<CommonAPIResponse<User>>(`api/user/${id}`, data);
