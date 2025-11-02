@@ -94,7 +94,7 @@ const useUserStore = defineStore('user', {
                 
                 // Giải mã token để lấy role
                 const decoded = jwtDecode<DecodedToken>(res.token);
-                if (decoded.isDeleted === true || decoded.is_deleted === true) {
+                if (decoded.isDeleted === true) {
                     clearToken();
                     sessionStorage.clear();
                     this.isLogin = false;
