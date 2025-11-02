@@ -75,22 +75,7 @@
                         </a-button>
                       </a-tooltip>
                     </a-popconfirm>
-                    <a-button @click="openModal(record)" >
-                        Cập nhật Role
-                    </a-button>
-                    <a-modal v-model:visible="visible" title="Cập nhật Role" @cancel="handleCancel" @before-ok="() => handleBeforeOk(record.id)" :loading="loading" destroy-on-close>
-                        <a-form label-align="left" :model="formUpdateRole" ref="formRef">
-                            <a-form-item field="role" label="Phần quyền" :label-col-props="{ span: 16 }" :wrapper-col-props="{ span: 24 }">
-                            <a-cascader
-                                v-model="formUpdateRole.role"
-                                placeholder="Chọn phần quyền"
-                                style="width: 100%;"
-                                :options="options"
-                                allow-clear
-                            />
-                        </a-form-item>
-                        </a-form>
-                    </a-modal>
+                    
                 </template>
             </a-table>
         </a-card>
@@ -146,11 +131,7 @@
 
     const size = ref<SizeProps>('medium');
     const currentId = ref<string | null>(null);
-    const openModal = (record: any) => {
-        currentId.value = record.id; 
-        visible.value = true;
-        formUpdateRole.value.role = record.role || ''; // nếu cần
-    };
+    
     const resetForm = () => {
         formUpdateRole.value = { role: '' };
         if (formRef.value) formRef.value.resetFields?.();
@@ -216,20 +197,7 @@
             slotName: 'operations',
         },
     ]);
-    const cloneRoles = async () => {
-        setLoading(true);
-        try {
-            const res = await getRoles();
-            const data = 'data' in res ? res.data : res;
-            options.value = Array.isArray(data) ? data.map((role: any) => ({ label: role.title, value: role.id })) : [];
-            
-        } catch (err) {
-            console.error('fetchData error:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
-    cloneRoles();
+    
     const fetchData = async (
     page = 0, size = 10
     ) => {
@@ -302,30 +270,6 @@
             setLoading(false);
         }
     };
-    const visible = ref(false);
-
-    const handleBeforeOk = async (id: string) => {
-        if (!currentId.value) return;
-        loading.value = true;
-        try {
-            const res = await updateRole(currentId.value, formUpdateRole.value.role);
-            visible.value = false;
-            done(true)
-            resetForm();
-            fetchData(
-                pagination.value.current - 1,
-                pagination.value.pageSize
-            );
-        } catch (err) {
-            console.error('Update role failed:', err)
-        } finally {
-            loading.value = false;
-        }
-    };
-    const handleCancel = () => {
-      visible.value = false;
-      resetForm();
-    }
     watch(
         () => columns.value,
         (val) => {

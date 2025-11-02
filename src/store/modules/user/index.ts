@@ -14,6 +14,8 @@ interface DecodedToken {
     iat?: number;
     details?: UserState;
     isLogin: boolean;
+    isDeleted?: boolean;
+    is_deleted?: boolean;
 }
 
 const useUserStore = defineStore('user', {
@@ -83,14 +85,19 @@ const useUserStore = defineStore('user', {
         async login(loginForm: LoginData) {
             try {
                 const res = (await userLogin(loginForm)) as LoginRes;
-
                 setToken(res.token);
                 // Lưu refreshToken
                 setRefreshToken(res.refreshToken);
-
+                
                 // Giải mã token để lấy role
                 const decoded = jwtDecode<DecodedToken>(res.token);
-
+                if (decoded.isDeleted === true || decoded.is_deleted === true) {
+                    clearToken();
+                    sessionStorage.clear();
+                    this.isLogin = false;
+                    this.logoutCallBack();
+                    throw new Error('Tài khoản không tồn tại hoặc đã bị xóa');
+                }
                 this.role = ((decoded.role as string) || '').toLowerCase() as RoleType;
                 this.email = decoded.email || '';
                 this.accountId = decoded.account_id || '';
@@ -130,7 +137,7 @@ const useUserStore = defineStore('user', {
         async logout() {
             clearToken();
             sessionStorage.clear();
-            document.body.setAttribute('arco-theme', 'light');
+            document.body.setAttribute('arco-theme', 'dark');
             this.isLogin = false;
             this.logoutCallBack();
         },

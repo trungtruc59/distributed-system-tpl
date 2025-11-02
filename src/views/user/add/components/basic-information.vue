@@ -38,6 +38,7 @@
                         <a-form-item 
                                 field="phone" 
                                 :label="'Số điện thoại'"
+                                :label-col-props="{ span: 16 }"
                                 :rules="[
                                     { required: true, message: 'Số điện thoại không được để trống' },
                                     {
@@ -71,21 +72,16 @@
                         <a-form-item
                             field="password"
                             :label="'Mật khẩu'"
+                            :validate-trigger="['change', 'blur']"
                             :rules="[
                                 { required: true, message: 'Mật khẩu không được để trống' },
                                 { minLength: 5, message: 'Mật khẩu phải có ít nhất 5 ký tự' },
                                 {
                                     validator: (value: string, cb: (error?: string) => void) => {
-                                        if (!value) {
-                                            cb('Vui lòng nhập mật khẩu');
-                                            return;
-                                        }
-
                                         if (value.length < 5) {
                                             cb('Mật khẩu phải có ít nhất 5 ký tự');
                                             return;
                                         }
-
                                         const hasUpper = /[A-Z]/.test(value);
                                         const hasLower = /[a-z]/.test(value);
                                         const hasSpecial = /[\W_]/.test(value);
@@ -98,17 +94,16 @@
                                     },
                                 },
                             ]"
-                            :validate-trigger="['change', 'blur']"
                         >
-                            <a-input
+                            <a-input-password
                                 v-model="formData.password"
-                                type="password"
                                 :placeholder="'Nhập mật khẩu'"
+                                allow-clear
                             >
                                 <template #prefix>
                                     <icon-lock />
                                 </template>
-                            </a-input>
+                            </a-input-password>
                         </a-form-item>
                     </a-col>
                 </a-row>
@@ -304,12 +299,12 @@
             try {
                 await updateAccount(props.id ? props.id : '', values);
                 Message.success('Cập nhật tài khoản thành công');
-                // router.push({
-                //     name: 'List',
-                //     query: {
-                //         ...othersQuery,
-                //     },
-                // });
+                router.push({
+                    name: 'List',
+                    query: {
+                        ...othersQuery,
+                    },
+                });
             } catch (err) {
                 console.log(err);
                 errorMessage.value = (err as Error).message;
