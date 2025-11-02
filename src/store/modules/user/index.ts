@@ -6,25 +6,32 @@ import { removeRouteListener } from '@/utils/route-listener';
 import { RoleType, UserState } from './types';
 import useAppStore from '../app';
 
-interface DecodedToken {
+type DecodedToken = {
     role?: string;
     email?: string;
+    phone: string;
     account_id?: string;
     exp?: number;
     iat?: number;
     details?: UserState;
     isLogin: boolean;
     isDeleted?: boolean;
-    is_deleted?: boolean;
-}
+    active: boolean;
+    verified: boolean;
+    isAdmin: boolean;
+    created_at?: string;
+};
+
+type UserInfo = Partial<UserState & Omit<DecodedToken, 'details'>>;
 
 const useUserStore = defineStore('user', {
     state: (): UserState => ({
         full_name: undefined,
         avatar: undefined,
         email: undefined,
-        phone: undefined,
+        phone: '',
         accountId: undefined,
+        created_at: undefined,
         role: 'user', // Mặc định là 'user'
         isLogin: isLogin(),
     }),
@@ -46,13 +53,9 @@ const useUserStore = defineStore('user', {
                 this.email = decoded.email || '';
                 this.accountId = decoded.account_id || '';
                 this.isLogin = true;
+                this.phone = decoded.phone || '';
                 // Nếu chưa có details trong token, gọi API lấy thông tin chi tiết
-                if (!decoded.details && this.accountId) {
-                    const user = await getUserInfo({ accountId: this.accountId });
-                    this.setInfo(user as unknown as Partial<UserState>);
-                } else {
-                    this.setInfo((decoded.details || {}) as Partial<UserState>);
-                }
+                this.setInfo({ ...decoded, ...(decoded.details || {}) } as UserInfo);
             } catch (err) {
                 this.logoutCallBack();
             }
@@ -66,7 +69,7 @@ const useUserStore = defineStore('user', {
         },
 
         // Gán thông tin user
-        setInfo(partial: Partial<UserState>) {
+        setInfo(partial: UserInfo) {
             const normalizedRole = (partial.role as string | undefined)?.toLowerCase() as RoleType | undefined;
             this.$patch({
                 ...partial,
@@ -100,10 +103,11 @@ const useUserStore = defineStore('user', {
                 }
                 this.role = ((decoded.role as string) || '').toLowerCase() as RoleType;
                 this.email = decoded.email || '';
+                this.phone = decoded.phone || '';
                 this.accountId = decoded.account_id || '';
                 // Lấy thông tin user
 
-                this.setInfo((decoded?.details || {}) as Partial<UserState>);
+                this.setInfo({ ...decoded, ...(decoded.details || {}) } as UserInfo);
                 this.isLogin = true;
                 return Promise.resolve(res);
             } catch (err) {
@@ -112,13 +116,14 @@ const useUserStore = defineStore('user', {
             }
         },
         // Đăng ký
-        async register(registerForm: RegisterData) {
+        async register(registerForm: RegisterData): Promise<any> {
             try {
+                const { repassword, ...registerInfo } = registerForm;
                 const payload = {
-                    ...registerForm,
-                    role: '7557a307-2190-40a6-8a2d-56d67a665b6d', // Mặc định vai trò là 'user' khi đăng ký
+                    ...registerInfo, // Mặc định vai trò là 'user' khi đăng ký
                 };
-                await userRegister(payload);
+                const res = await userRegister(payload);
+                return res;
             } catch (err) {
                 clearToken();
                 throw err;

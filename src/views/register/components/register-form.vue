@@ -152,15 +152,17 @@
         if (!errors) {
             setLoading(true);
             try {
-                await userStore.register(values as RegisterData);
-                const { redirect, ...othersQuery } = router.currentRoute.value.query;
-                router.push({
-                    name: (redirect as string) || 'login',
-                    query: {
-                        ...othersQuery,
-                    },
-                });
-                Message.success(t('register.form.success'));
+                const res = await userStore.register(values as RegisterData);
+                if (res && 'data' in res) {
+                    const { redirect, ...othersQuery } = router.currentRoute.value.query;
+                    router.push({
+                        name: (redirect as string) || 'login',
+                        query: {
+                            ...othersQuery,
+                        },
+                    });
+                    Message.success(t('register.form.success'));
+                }
             } catch (err) {
                 console.log(err);
 
