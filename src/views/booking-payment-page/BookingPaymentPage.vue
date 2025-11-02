@@ -98,9 +98,11 @@
     import useBranchStore from '@/store/modules/branches';
     import { Modal } from '@arco-design/web-vue';
     import useBookingStore from '@/store/modules/booking/bookingStore';
+    import { useUserStore } from '@/store';
 
     const router = useRouter();
     const branchStore = useBranchStore();
+    const userStore = useUserStore();
     const { selectedBranch: branch } = branchStore;
     const { selectedDay, selectedCourt, getPriceOfCourt, createNewBooking, courts, resetStore } = useBookingStore();
 
@@ -126,8 +128,8 @@
     const totalPrice = computed(() => scheduleList.value.reduce((a, b) => a + b.totalPrice, 0));
 
     const form = reactive({
-        name: '',
-        phone: '',
+        name: userStore.full_name || '',
+        phone: userStore.phone || '',
         note: '',
     });
 

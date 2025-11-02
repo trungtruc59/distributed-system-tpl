@@ -5,7 +5,7 @@ import * as branchService from '@/api/branch';
 import * as courtService from '@/api/court';
 import dayjs from 'dayjs';
 import { Price } from '@/types/itemTypes';
-import { postBooking } from '@/api/booking';
+import { postBooking, getBookingHistory } from '@/api/booking';
 import { DayNumberToEnum, DayOfWeek } from './dayMapping.constant';
 
 export type useBookingStoreProps = {
@@ -50,6 +50,14 @@ const useBookingStore = defineStore('booking', {
             if (rs && 'data' in rs) {
                 this.courts = rs.data;
             }
+        },
+
+        async getUserBookingHistory(phone: string) {
+            const rs = await getBookingHistory(phone);
+            if (rs && 'data' in rs) {
+                return rs.data;
+            }
+            return [];
         },
 
         getPriceOfCourt(courtName: string, period: any) {

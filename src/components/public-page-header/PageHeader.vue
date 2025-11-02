@@ -76,6 +76,7 @@
     const handleSelect = (v) => {
         if (v === 'logout') {
             userStore.logout();
+            handleRedirectToHome();
             return;
         }
         if (typeof v === 'string') {
