@@ -89,11 +89,11 @@
     import { Pagination } from '@/types/global';
     import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
     import cloneDeep from 'lodash/cloneDeep';
-    import { User,  accountRequest } from '@/types/userTypes';
-    import { getUsers, deleteAccount, activeAccount, updateRole, getRoles } from '@/api/user';
+    import { accountRequest } from '@/types/userTypes';
+    import { getUsers, deleteAccount, activeAccount } from '@/api/user';
     import { useRouter } from 'vue-router';
     import Breadcrumb from '@/components/breadcrumb/index.vue';
-    import { done } from 'nprogress';
+    
 
     const router = useRouter();
 
@@ -119,7 +119,6 @@
         };
     };
     const formRef = ref();
-    const options = ref<{ label: string; value: string }[]>([]);
     const formUpdateRole = ref({
         role: '', // chỉ 1 role duy nhất
     });
@@ -211,7 +210,6 @@
             const filteredData = Array.isArray(data)
             ? (data as accountRequest[]).filter((item) => item.deleted === false)
             : [];
-            console.log(filteredData);
             
             const totalElements = 'totalElements' in res ? res.totalElements : 0;
             renderData.value = filteredData;

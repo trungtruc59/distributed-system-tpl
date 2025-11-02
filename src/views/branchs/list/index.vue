@@ -10,26 +10,15 @@
           <a-form
             :model="formModel"
             :label-col-props="{ span: 5 }"
-            :wrapper-col-props="{ span: 18 }"
+            :wrapper-col-props="{ span: 19 }"
             label-align="left"
           >
             <a-row :gutter="20">
-              <a-col :span="8" >
-                <a-form-item field="name" :label="'Tên sân'">
+              <a-col :span="12" >
+                <a-form-item field="name" :label="'Tên chi nhánh'">
                   <a-input
                     v-model="formModel.name"
-                    placeholder="Tên sân"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8" :offset="1">
-                <a-form-item
-                  field="status"
-                  :label="'Trạng thái'"
-                >
-                  <a-input
-                    v-model="formModel.status"
-                    placeholder="Trạng thái"
+                    placeholder="Tên chi nhánh"
                   />
                 </a-form-item>
               </a-col>
@@ -88,6 +77,7 @@
         :pagination="pagination"
         :columns="(cloneColumns as TableColumnData[])"
         :data="renderData"
+        :row-selection="rowSelection"
         :bordered="false"
         :size="size"
         @page-change="onPageChange"
@@ -95,49 +85,30 @@
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
         </template>
-        <template #contentType="{ record }">
+        <template #thumbnail="{ record }">
           <a-space>
-            <a-avatar
-              v-if="record.contentType === 'img'"
-              :size="16"
-              shape="square"
-            >
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/581b17753093199839f2e327e726b157.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            <a-avatar
-              v-else-if="record.contentType === 'horizontalVideo'"
-              :size="16"
-              shape="square"
-            >
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/77721e365eb2ab786c889682cbc721c1.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            <a-avatar v-else :size="16" shape="square">
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/ea8b09190046da0ea7e070d83c5d1731.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            {{ $t(`searchTable.form.contentType.${record.contentType}`) }}
+            <a-image :src="record.logo" :alt="record.name" :preview="false" fit="cover" class="branch-information--image" />
           </a-space>
         </template>
-        <template #filterType="{ record }">
-          {{ $t(`searchTable.form.filterType.${record.filterType}`) }}
+        <template #createdTime="{ record }">
+          {{ dayjs(record.openTime).format('HH:mm') }} - {{ dayjs(record.closeTime).format('HH:mm') }}
         </template>
-        <template #status="{ record }">
-          <span v-if="record.status === 'full'" class="circle"></span>
-          <span v-else class="circle pass"></span>
-          {{ record.status }}
-        </template>
+
         <template #operations>
-          <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('searchTable.columns.operations.view') }}
-          </a-button>
+          <a-space>
+            <a-tooltip :content="'Cập nhật'">
+              <a-button type="text" status="normal" @click="handleEdit(record.id)">
+                <icon-edit />
+              </a-button>
+            </a-tooltip>
+          </a-space>
+          <a-popconfirm content="Bạn có chắc chắn muốn xoá tài khoản này?" type="warning" @ok="handleDelete(record.id)">
+            <a-tooltip :content="'Xoá'">
+              <a-button type="text" status="danger">
+                <icon-delete />
+              </a-button>
+            </a-tooltip>
+          </a-popconfirm>
         </template>
       </a-table>
     </a-card>
@@ -148,16 +119,22 @@
   import { computed, ref, reactive, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
-  import { queryPolicyList, PolicyRecord, PolicyParams } from '@/api/list';
+  import { getUserBranches } from '@/api/branch';
+  import { Branch, BranchRequest } from '@/types/branchTypes';
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import cloneDeep from 'lodash/cloneDeep';
   import Sortable from 'sortablejs';
+  import dayjs from 'dayjs';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
-
+  const rowSelection = ref({
+        type: 'checkbox',
+        showCheckedAll: true,
+        onlyCurrent: false,
+    });
   const generateFormModel = () => {
     return {
       number: '',
@@ -170,7 +147,7 @@
   };
   const { loading, setLoading } = useLoading(true);
   const { t } = useI18n();
-  const renderData = ref<PolicyRecord[]>([]);
+  const renderData = ref<Branch[]>([]);
   const formModel = ref(generateFormModel());
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
@@ -178,11 +155,11 @@
   const size = ref<SizeProps>('medium');
 
   const basePagination: Pagination = {
-    current: 0,
-    pageSize: 50,
+      current: 1,
+      pageSize: 10,
   };
-  const pagination = reactive({
-    ...basePagination,
+  const pagination = ref({
+      ...basePagination,
   });
   const densityList = computed(() => [
     {
@@ -218,12 +195,12 @@
       title: 'Ảnh đại diện',
       dataIndex: 'thumbnail',
       slotName: 'thumbnail',
-      width: 200,
+      width: 130,
     },
     {
       title: 'Địa chỉ',
       dataIndex: 'address',
-      width: 280,
+      width: 220,
     },
     {
       title: 'Số điện thoại',
@@ -231,15 +208,10 @@
       width: 150,
     },
     {
-      title: 'Giờ mở cửa',
+      title: 'Thời gian hoạt động',
       dataIndex: 'createdTime',
+      slotName: 'createdTime',
       width: 180,
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'status',
-      slotName: 'status',
-      width: 120,
     },
     {
       title: 'Hành động',
@@ -247,49 +219,18 @@
       slotName: 'operations',
     },
   ]);
-  const contentTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('searchTable.form.contentType.img'),
-      value: 'img',
-    },
-    {
-      label: t('searchTable.form.contentType.horizontalVideo'),
-      value: 'horizontalVideo',
-    },
-    {
-      label: t('searchTable.form.contentType.verticalVideo'),
-      value: 'verticalVideo',
-    },
-  ]);
-  const filterTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('searchTable.form.filterType.artificial'),
-      value: 'artificial',
-    },
-    {
-      label: t('searchTable.form.filterType.rules'),
-      value: 'rules',
-    },
-  ]);
-  const statusOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: 'Còn sân',
-      value: 'available',
-    },
-    {
-      label: 'Hết sân',
-      value: 'full',
-    },
-  ]);
+
   const fetchData = async (
-    params: PolicyParams = { current: 1, pageSize: 5 }
-  ) => {
+    page = 0, size = 10
+    ) => {
     setLoading(true);
     try {
-      const { data } = await queryPolicyList(params);
-      renderData.value = data.list;
-      pagination.current = params.current;
-      pagination.total = data.total;
+      const res = await getUserBranches();
+      const data = ('data' in res && Array.isArray(res.data)) ? res.data as Branch[] : [];
+      renderData.value = data;
+      console.log(res);
+      const totalElements = 'totalElements' in res ? res.totalElements : 0;
+      pagination.value.total = totalElements;
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
@@ -298,14 +239,18 @@
   };
 
   const search = () => {
-    fetchData({
-      ...basePagination,
-      ...formModel.value,
-    } as unknown as PolicyParams);
+    fetchData(
+        pagination.value.current - 1,
+        pagination.value.pageSize
+    );
   };
   const onPageChange = (current: number) => {
-    fetchData({ ...basePagination, current });
-  };
+        pagination.value.current = current;
+        fetchData(
+            current - 1,
+            pagination.value.pageSize
+        );
+    };
 
   fetchData();
   const reset = () => {
@@ -317,53 +262,6 @@
     e: Event
   ) => {
     size.value = val as SizeProps;
-  };
-
-  const handleChange = (
-    checked: boolean | (string | boolean | number)[],
-    column: Column,
-    index: number
-  ) => {
-    if (!checked) {
-      cloneColumns.value = showColumns.value.filter(
-        (item) => item.dataIndex !== column.dataIndex
-      );
-    } else {
-      cloneColumns.value.splice(index, 0, column);
-    }
-  };
-
-  const exchangeArray = <T extends Array<any>>(
-    array: T,
-    beforeIdx: number,
-    newIdx: number,
-    isDeep = false
-  ): T => {
-    const newArray = isDeep ? cloneDeep(array) : array;
-    if (beforeIdx > -1 && newIdx > -1) {
-      // 先替换后面的，然后拿到替换的结果替换前面的
-      newArray.splice(
-        beforeIdx,
-        1,
-        newArray.splice(newIdx, 1, newArray[beforeIdx]).pop()
-      );
-    }
-    return newArray;
-  };
-
-  const popupVisibleChange = (val: boolean) => {
-    if (val) {
-      nextTick(() => {
-        const el = document.getElementById('tableSetting') as HTMLElement;
-        const sortable = new Sortable(el, {
-          onEnd(e: any) {
-            const { oldIndex, newIndex } = e;
-            exchangeArray(cloneColumns.value, oldIndex, newIndex);
-            exchangeArray(showColumns.value, oldIndex, newIndex);
-          },
-        });
-      });
-    }
   };
 
   watch(
@@ -392,6 +290,16 @@
   .branch-card {
     border-radius: 8px;
     padding-top: 20px;
+  }
+  .branch-information--image {
+    width: 80px;
+    height: 50px;
+    
+    & :deep(.arco-image-img){
+      width: auto;
+      height: 60px;
+      border-radius: 4px;
+    }
   }
   :deep(.arco-table-th) {
     &:last-child {
