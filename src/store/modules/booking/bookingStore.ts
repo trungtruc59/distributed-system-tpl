@@ -1,4 +1,3 @@
-import { Notification } from '@arco-design/web-vue';
 import { defineStore } from 'pinia';
 
 import * as branchService from '@/api/branch';
@@ -45,11 +44,13 @@ const useBookingStore = defineStore('booking', {
             return null;
         },
 
-        async getAllCourtOfBranch(branchId: string) {
+        async getAllCourtOfBranch(branchId: string): Promise<any> {
             const rs = await courtService.getCourtOfBranch(branchId);
             if (rs && 'data' in rs) {
                 this.courts = rs.data;
+                return rs.data;
             }
+            return [];
         },
 
         async getUserBookingHistory(phone: string) {

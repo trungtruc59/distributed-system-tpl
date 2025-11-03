@@ -11,4 +11,5 @@ export interface UserState {
     role: RoleType;
     isLogin: boolean;
     created_at?: string;
+    activeBranch?: string;
 }

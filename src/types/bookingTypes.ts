@@ -1,3 +1,5 @@
+import { ItemPayload } from './courtType';
+
 export type BookingItemRequest = {
     itemId: string;
     quantity: number;
@@ -14,6 +16,6 @@ export type BookingRequest = {
 
 export type BookingItem = {
     id: string;
-    item: any;
+    item: ItemPayload;
     price: number;
 } & Omit<BookingItemRequest, 'itemId'>;
