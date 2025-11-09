@@ -8,12 +8,12 @@
         <div class="branch-information--content">
             <div class="branch-information--header">
                 <img :src="branch.logo" class="branch-information--logo" style="width: 60px; height: auto" />
-                <div>
+                <div class="branch-information--info">
                     <div class="branch-information--title">
                         {{ branch.name }}
                     </div>
                     <div class="branch-information--address-group">
-                        <div>
+                        <div class="branch-information--box">
                             <div class="branch-information--address">
                                 {{ branch.address }}
                             </div>
@@ -21,7 +21,7 @@
                                 <div class="branch-information---hours">
                                     <i class="bx bx-clock-4"></i> {{ formatOpenAndCloseTimeOfBranch(branch.openTime, branch.closeTime) }}
                                 </div>
-                                <a-link><i class="bx bx-phone"></i> &nbsp; liên hệ </a-link>
+                                <a-link :href="'tel:' + branch.phone"><i class="bx bx-phone"></i> &nbsp; liên hệ </a-link>
                             </div>
                         </div>
                         <a-button type="primary" size="mini" shape="round" class="booking-btn" @click="handleClickSchedule"> ĐẶT LỊCH </a-button>
@@ -115,6 +115,10 @@
         background: white;
         color: #333;
     }
+    .branch-information--info {
+        padding-left: 12px;
+        width: calc(100% - 72px);
+    }
     .branch-information--content {
         padding: 12px 16px;
         position: relative;
@@ -160,8 +164,13 @@
     .branch-information--address-group {
         display: flex;
         gap: 1rem;
+        align-items: end;
     }
-
+    .branch-information--box {
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 76px);
+    }
     .branch-information---hours {
         display: flex;
         align-items: center;

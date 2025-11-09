@@ -37,7 +37,7 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary">
+            <a-button type="primary" @click="router.push({ name: 'BranchsAdd' })">
               <template #icon>
                 <icon-plus />
               </template>
@@ -122,12 +122,13 @@
   import { getUserBranches } from '@/api/branch';
   import { Branch, BranchRequest } from '@/types/branchTypes';
   import { Pagination } from '@/types/global';
-  import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
+  import { useRouter } from 'vue-router';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import cloneDeep from 'lodash/cloneDeep';
-  import Sortable from 'sortablejs';
   import dayjs from 'dayjs';
+  import Breadcrumb from '@/components/breadcrumb/index.vue';
 
+  const router = useRouter();
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
   const rowSelection = ref({

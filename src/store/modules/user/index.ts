@@ -142,7 +142,7 @@ const useUserStore = defineStore('user', {
         async logout() {
             clearToken();
             sessionStorage.clear();
-            document.body.setAttribute('arco-theme', 'dark');
+            document.body.setAttribute('arco-theme', 'light');
             this.isLogin = false;
             this.logoutCallBack();
         },

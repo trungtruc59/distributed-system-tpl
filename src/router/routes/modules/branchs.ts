@@ -23,6 +23,17 @@ const BRANCH: AppRouteRecordRaw = {
             },
         },
         {
+            path: 'add',
+            name: 'BranchsAdd',
+            component: () => import('@/views/branchs/list/add.vue'),
+            meta: {
+                locale: 'Thêm chi nhánh',
+                hideInMenu: true,
+                requiresAuth: true,
+                roles: ['*'],
+            },
+        },
+        {
             path: 'courts-management',
             name: 'court-listing',
             component: () => import('@/views/court-management/CourtManagement.vue'),

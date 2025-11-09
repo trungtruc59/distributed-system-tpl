@@ -31,12 +31,12 @@
                     </a-col>
                     <a-col :span="5">
                         <a-form-item :field="`prices[${index}].startTime`" :label="index === 0 ? `Giờ bắt đầu` : undefined">
-                            <a-time-picker v-model="price.startTime" :allow-clear="false" placeholder="Chọn giờ bắt đầu" />
+                            <a-time-picker format="HH:mm" v-model="price.startTime" :allow-clear="false" placeholder="Chọn giờ bắt đầu" />
                         </a-form-item>
                     </a-col>
                     <a-col :span="5">
                         <a-form-item :field="`prices[${index}].endTime`" :label="index === 0 ? `Giờ kết thúc` : undefined">
-                            <a-time-picker v-model="price.endTime" :allow-clear="false" placeholder="Chọn giờ kết thúc" />
+                            <a-time-picker format="HH:mm" v-model="price.endTime" :allow-clear="false" placeholder="Chọn giờ kết thúc" />
                         </a-form-item>
                     </a-col>
                     <a-col :span="5">
@@ -75,8 +75,8 @@
     const getDefaultPrice = (isDefault = false) => {
         return {
             dayOfWeek: 'SUNDAY',
-            startTime: '06:00:00',
-            endTime: '22:00:00',
+            startTime: '06:00',
+            endTime: '22:00',
             price: 30000,
             isDefault,
         };
