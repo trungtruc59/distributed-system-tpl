@@ -44,6 +44,19 @@ const useBranchStore = defineStore('branch', {
             }
         },
 
+        async getUserBranchesWithParams(params?: CommonSearchParams) {
+            try {
+                this.isLoading = true;
+                const rs = await branchService.getUserBranches(params);
+                this.isLoading = false;
+                if (rs && 'data' in rs) {
+                    this.branches = rs.data;
+                }
+            } catch (e) {
+                this.isLoading = false;
+            }
+        },
+
         async getBranchById(branchId: string) {
             this.isLoading = true;
             const rs = await branchService.getBranch(branchId);

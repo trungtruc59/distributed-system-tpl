@@ -231,7 +231,7 @@
       const data = ('data' in res && Array.isArray(res.data)) ? res.data as Branch[] : [];
       renderData.value = data;
       console.log(res);
-      const totalElements = 'totalElements' in res ? res.totalElements : 0;
+      const totalElements = 'totalElements' in res ? Number(res.totalElements) : 0;
       pagination.value.total = totalElements;
     } catch (err) {
       // you can report use errorHandler or other
@@ -240,11 +240,20 @@
     }
   };
 
-  const search = () => {
-    fetchData(
-        pagination.value.current - 1,
-        pagination.value.pageSize
-    );
+  const search = async () => {
+    setLoading(true);
+    try {
+      const res = useBranchStore().getUserBranchesWithParams({
+        searchKey: formModel.value.name,
+      });  
+      const data = ('data' in res && Array.isArray(res.data)) ? res.data as Branch[] : [];
+      renderData.value = data;
+      
+    } catch (err) {
+      // you can report use errorHandler or other
+    } finally {
+      setLoading(false);
+    }
   };
   const onPageChange = (current: number) => {
         pagination.value.current = current;
