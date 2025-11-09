@@ -166,7 +166,6 @@
         const res = await getBranch(branchId) 
         // res.data mới là object Branch
         const branch = 'data' in res ? res.data : null;
-        console.log(branch);
         
         if (branch) {
             dataForm.value = {

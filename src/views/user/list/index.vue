@@ -247,7 +247,7 @@
             await deleteAccount(id)
         } catch (err) {
             console.error('delete error:', err);
-             renderData.value = oldData;
+            renderData.value = oldData;
             pagination.value.total = (pagination.value.total ?? 0) + 1;
            
         } finally {

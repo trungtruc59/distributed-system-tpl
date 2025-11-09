@@ -26,5 +26,5 @@ export const updateBranch = (branchId: string, payload: BranchRequest) => {
 };
 
 export const deleteBranch = (branchId: string) => {
-    return http.get<CommonAPIResponse<boolean>>(`api/branch/${branchId}`);
+    return http.delete<CommonAPIResponse<boolean>>(`api/branch/${branchId}`);
 };

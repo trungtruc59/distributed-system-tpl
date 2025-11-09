@@ -127,6 +127,7 @@
   import cloneDeep from 'lodash/cloneDeep';
   import dayjs from 'dayjs';
   import Breadcrumb from '@/components/breadcrumb/index.vue';
+  import useBranchStore from '@/store/modules/branches';
 
   const router = useRouter();
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
@@ -266,7 +267,22 @@
   ) => {
     size.value = val as SizeProps;
   };
-
+  const handleDelete = async (id: string) => {
+      setLoading(true);
+      const oldData = [...renderData.value];
+      renderData.value = renderData.value.filter(item => item.id !== id);
+      pagination.value.total = (pagination.value.total ?? 0) - 1;
+      try {
+        useBranchStore().deleteBranch(id);  
+      } catch (err) {
+          console.error('delete error:', err);
+          renderData.value = oldData;
+          pagination.value.total = (pagination.value.total ?? 0) + 1;
+          
+      } finally {
+          setLoading(false);
+      }
+  };
   watch(
     () => columns.value,
     (val) => {
