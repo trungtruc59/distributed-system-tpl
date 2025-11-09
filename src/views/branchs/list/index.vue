@@ -94,7 +94,7 @@
           {{ dayjs(record.openTime).format('HH:mm') }} - {{ dayjs(record.closeTime).format('HH:mm') }}
         </template>
 
-        <template #operations>
+        <template #actions="{ record }">
           <a-space>
             <a-tooltip :content="'Cập nhật'">
               <a-button type="text" status="normal" @click="handleEdit(record.id)">
@@ -216,8 +216,8 @@
     },
     {
       title: 'Hành động',
-      dataIndex: 'operations',
-      slotName: 'operations',
+      dataIndex: 'actions',
+      slotName: 'actions',
     },
   ]);
 
@@ -257,7 +257,9 @@
   const reset = () => {
     formModel.value = generateFormModel();
   };
-
+  const handleEdit = (id: string) => {
+    router.push({ name: 'BranchsEdit', params: { id } });
+  };
   const handleSelectDensity = (
     val: string | number | Record<string, any> | undefined,
     e: Event

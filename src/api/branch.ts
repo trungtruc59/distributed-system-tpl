@@ -21,8 +21,8 @@ export const createNewBranch = (payload: BranchRequest) => {
     return http.post<CommonAPIResponse<Branch>>('api/branch', payload);
 };
 
-export const updateBranch = (payload: BranchRequest) => {
-    return http.put<CommonAPIResponse<Branch>>('api/branch', payload);
+export const updateBranch = (branchId: string, payload: BranchRequest) => {
+    return http.put<CommonAPIResponse<Branch>>(`api/branch/${branchId}`, payload);
 };
 
 export const deleteBranch = (branchId: string) => {

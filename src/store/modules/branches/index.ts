@@ -62,9 +62,9 @@ const useBranchStore = defineStore('branch', {
             }
         },
 
-        async updateBranch(payload: BranchRequest) {
+        async updateBranch(branchId:string,payload: BranchRequest) {
             this.isLoading = true;
-            const rs = await branchService.updateBranch(payload);
+            const rs = await branchService.updateBranch(branchId,payload);
             this.isLoading = false;
             if (rs && 'data' in rs) {
                 this.selectedBranch = rs.data;

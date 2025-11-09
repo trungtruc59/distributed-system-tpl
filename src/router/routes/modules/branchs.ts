@@ -34,6 +34,17 @@ const BRANCH: AppRouteRecordRaw = {
             },
         },
         {
+            path: 'edit/:id',
+            name: 'BranchsEdit',
+            component: () => import('@/views/branchs/list/edit.vue'),
+            meta: {
+                locale: 'Sửa thong tin chi nhánh',
+                hideInMenu: true,
+                requiresAuth: true,
+                roles: ['*'],
+            },
+        },
+        {
             path: 'courts-management',
             name: 'court-listing',
             component: () => import('@/views/court-management/CourtManagement.vue'),
