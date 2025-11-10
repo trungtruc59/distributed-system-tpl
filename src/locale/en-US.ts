@@ -33,6 +33,8 @@ export default {
   'menu.server.workplace': 'Workplace-Server',
   'menu.server.monitor': 'Monitor-Server',
   'menu.list': 'List',
+  'menu.booking': 'Booking',
+  'menu.booking.management': 'Booking Management',
   'menu.result': 'Result',
   'menu.exception': 'Exception',
   'menu.form': 'Form',

@@ -35,6 +35,8 @@ export default {
   'menu.server.workplace': 'Workplace-Server',
   'menu.server.monitor': 'Monitor-Server',
   'menu.list': 'Quản lý đặt sân',
+  'menu.booking': 'Đặt sân',
+  'menu.booking.management': 'Quản lý đơn đặt sân',
   'menu.products': 'Quản lý sản phẩm',
   'menu.result': 'Kết quả',
   'menu.exception': 'Ngoại lệ',
