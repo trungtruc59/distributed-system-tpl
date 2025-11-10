@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import dayjs from 'dayjs';
-import { cancelBooking, deleteBooking, getBooking, getBookingDetail, updateBooking } from '@/api/booking';
+import { cancelBooking, deleteBooking, getBooking, getBookingDetail, postBooking, updateBooking } from '@/api/booking';
 import { BookingListParams, BookingResponse } from '@/types/bookingTypes';
 
 type BookingManagementState = {
@@ -138,6 +138,15 @@ const useBookingManagementStore = defineStore('booking-management', {
                 return updatedBooking;
             }
             return null;
+        },
+
+        async createBooking(payload: any) {
+            const response = await postBooking(payload);
+            if (response && 'data' in response) {
+                // Không tự refresh ở đây, để component tự refresh với filter hiện tại
+                return response.data;
+            }
+            throw new Error('Không thể tạo đơn đặt sân');
         },
     },
 });

@@ -31,6 +31,12 @@
                 </a-row>
                 <div class="filter-actions">
                     <a-space>
+                        <a-button type="primary" @click="handleOpenCreateModal">
+                            <template #icon>
+                                <icon-plus />
+                            </template>
+                            Tạo đơn mới
+                        </a-button>
                         <a-button type="primary" @click="handleSearch">
                             <template #icon>
                                 <icon-search />
@@ -111,6 +117,14 @@
             @close="handleCloseDetail"
             @confirm-paid="handleConfirmPaid"
         />
+
+        <CreateBookingModal
+            v-if="createModalVisible"
+            :visible="createModalVisible"
+            :branch-id="selectedBranch"
+            @close="handleCloseCreateModal"
+            @success="handleCreateSuccess"
+        />
     </div>
 </template>
 
@@ -123,8 +137,9 @@
     import { getUserBranches } from '@/api/branch';
     import useBookingManagementStore from '@/store/modules/booking/bookingManagementStore';
     import { BookingResponse, BookingStatus } from '@/types/bookingTypes';
-    import { Branch } from '@/types/branchTypes';
-    import BookingDetailDrawer from './components/BookingDetailDrawer.vue';
+import { Branch } from '@/types/branchTypes';
+import BookingDetailDrawer from './components/BookingDetailDrawer.vue';
+import CreateBookingModal from './components/CreateBookingModal.vue';
 
     type StatusFilter = BookingStatus | 'ALL';
 
@@ -140,8 +155,9 @@
     const statusFilter = ref<StatusFilter>('ALL');
     const dateRange = ref<string[]>([dayjs().format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')]);
 
-    const detailVisible = ref(false);
-    const confirmLoading = ref(false);
+const detailVisible = ref(false);
+const confirmLoading = ref(false);
+const createModalVisible = ref(false);
 
     const pagination = reactive({
         current: 1,
@@ -300,6 +316,22 @@
     const handleCloseDetail = () => {
         bookingManagementStore.setSelectedBooking(null);
         detailVisible.value = false;
+    };
+
+    const handleOpenCreateModal = () => {
+        if (!selectedBranch.value) {
+            Message.warning('Vui lòng chọn chi nhánh trước');
+            return;
+        }
+        createModalVisible.value = true;
+    };
+
+    const handleCloseCreateModal = () => {
+        createModalVisible.value = false;
+    };
+
+    const handleCreateSuccess = () => {
+        loadBookings();
     };
 
     const handleCancelBooking = async (bookingId: string) => {
