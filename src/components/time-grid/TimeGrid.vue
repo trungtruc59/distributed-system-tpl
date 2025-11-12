@@ -80,6 +80,10 @@
             type: String,
             default: '#ff6666',
         },
+        disabledDays: {
+            type: Function,
+            default: null,
+        },
     });
 
     const emit = defineEmits(['change']);
@@ -162,7 +166,14 @@
 
     const isSlotDisabled = (rowIndex, slotIndex) => {
         const period = getPeriodAtSlot(rowIndex, slotIndex);
-        return period?.disabled === true;
+        if (period?.disabled === true) return true;
+
+        if (props.disabledDays && slotIndex < timeSlots.value.length) {
+            const slotDate = timeSlots.value[slotIndex];
+            return props.disabledDays(slotDate);
+        }
+
+        return false;
     };
 
     const isSlotInDragRange = (rowIndex, slotIndex) => {
@@ -181,10 +192,14 @@
 
         const period = getPeriodAtSlot(rowIndex, slotIndex);
         if (period) {
-            if (period.disabled) {
+            if (period.disabled || isSlotDisabled(rowIndex, slotIndex)) {
                 return period.color ? `${period.color}80` : `${props.selectColor}80`;
             }
             return period.color || props.selectColor;
+        }
+
+        if (isSlotDisabled(rowIndex, slotIndex)) {
+            return '#f3f4f6';
         }
 
         return undefined;
